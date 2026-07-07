@@ -31,6 +31,7 @@ const AdminCourses = () => {
     // Upload to Supabase Storage
     setImageUploading(true)
     try {
+      if (!supabase) throw new Error('Supabase not configured')
       const ext = file.name.split('.').pop()
       const fileName = `course-${Date.now()}.${ext}`
 
@@ -103,14 +104,15 @@ const AdminCourses = () => {
 
     try {
       if (editingId) {
-        // Try Supabase update
-        await supabase.from('courses').update(payload).eq('id', editingId)
+        if (supabase) await supabase.from('courses').update(payload).eq('id', editingId)
         setCourses(prev => prev.map(c => c.id === editingId ? { ...c, ...form, ...payload } : c))
         showToast('✅ Course updated!')
       } else {
-        // Try Supabase insert
-        const { data, error } = await supabase.from('courses').insert([payload]).select().single()
-        const newCourse = data || { ...payload, id: Date.now() }
+        let newCourse = { ...payload, id: Date.now() }
+        if (supabase) {
+          const { data } = await supabase.from('courses').insert([payload]).select().single()
+          if (data) newCourse = data
+        }
         setCourses(prev => [{ ...newCourse, isBestseller: newCourse.is_bestseller ?? form.isBestseller, isNew: newCourse.is_new ?? form.isNew, isFree: newCourse.is_free ?? form.isFree }, ...prev])
         showToast('✅ Course added!')
       }
@@ -128,7 +130,7 @@ const AdminCourses = () => {
 
   const handleDelete = async (id) => {
     try {
-      await supabase.from('courses').delete().eq('id', id)
+      if (supabase) await supabase.from('courses').delete().eq('id', id)
     } catch { /* offline fallback */ }
     setCourses(prev => prev.filter(c => c.id !== id))
     setDeleteConfirm(null)

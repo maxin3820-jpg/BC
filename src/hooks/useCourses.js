@@ -4,9 +4,16 @@ import { courses as localCourses } from '../data/courses'
 
 export const useCourses = () => {
   const [courses, setCourses] = useState(localCourses)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
+    // No Supabase configured — use local data instantly
+    if (!supabase) {
+      setLoading(false)
+      return
+    }
+
+    setLoading(true)
     const fetchCourses = async () => {
       try {
         const { data, error } = await supabase
@@ -18,7 +25,6 @@ export const useCourses = () => {
         if (error || !data || data.length === 0) {
           setCourses(localCourses)
         } else {
-          // Map Supabase snake_case to camelCase
           setCourses(data.map(c => ({
             id: c.id,
             title: c.title,

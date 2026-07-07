@@ -4,9 +4,16 @@ import { packs as localPacks } from '../pages/Packs'
 
 export const usePacks = () => {
   const [packs, setPacks] = useState(localPacks)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
+    // No Supabase configured — use local data instantly
+    if (!supabase) {
+      setLoading(false)
+      return
+    }
+
+    setLoading(true)
     const fetchPacks = async () => {
       try {
         const { data, error } = await supabase
