@@ -1,14 +1,15 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import CourseCard from '../components/CourseCard/CourseCard'
+import { SkeletonGrid } from '../components/Skeleton/Skeleton'
 import { stats } from '../data/courses'
 import { useCourses } from '../hooks/useCourses'
 import { usePacks } from '../hooks/usePacks'
 import './Home.css'
 
 const Home = () => {
-  const { courses } = useCourses()
-  const { packs } = usePacks()
+  const { courses, loading: coursesLoading } = useCourses()
+  const { packs, loading: packsLoading } = usePacks()
   return (
     <div className="home">
 
@@ -71,9 +72,10 @@ const Home = () => {
             </p>
           </div>
           <div className="courses-grid">
-            {courses.map(course => (
-              <CourseCard key={course.id} course={course} />
-            ))}
+            {coursesLoading
+              ? <SkeletonGrid count={6} />
+              : courses.map(course => <CourseCard key={course.id} course={course} />)
+            }
           </div>
           <div className="section-cta">
             <Link to="/courses" className="btn btn-outline">Browse & Filter All Courses →</Link>

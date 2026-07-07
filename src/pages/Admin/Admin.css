@@ -595,3 +595,26 @@
   .quick-actions { grid-template-columns: 1fr 1fr; }
   .admin-user-name { display: none; }
 }
+
+/* ===== 360px ADMIN FIXES ===== */
+@media (max-width: 360px) {
+  .admin-content { padding: 0.75rem; }
+  .admin-stats-grid { grid-template-columns: 1fr; gap: 0.75rem; }
+  .admin-card { padding: 0.875rem; }
+  .admin-modal-body { padding: 1rem; }
+  .admin-search { min-width: unset !important; width: 100% !important; }
+  .quick-actions { grid-template-columns: 1fr; }
+  .asc-value { font-size: 1.25rem; }
+  .admin-btn-primary, .admin-btn-secondary { padding: 0.5rem 0.875rem; font-size: 0.8rem; }
+}
+
+/* ===== ADMIN SAFE AREA ===== */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .admin-sidebar-footer { padding-bottom: calc(1rem + env(safe-area-inset-bottom)); }
+}
+
+/* ===== ADMIN TABLE SCROLL INDICATOR ===== */
+.admin-table {
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}

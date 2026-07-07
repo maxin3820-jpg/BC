@@ -20,7 +20,7 @@ const CourseCard = ({ course }) => {
       {/* Thumbnail */}
       <div className="card-thumb">
         {isImage ? (
-          <img src={thumbnail} alt={title} className="card-thumb-img" />
+          <img src={thumbnail} alt={title} className="card-thumb-img" loading="lazy" width="400" height="190" />
         ) : (
           <div
             className="card-thumb-bg"

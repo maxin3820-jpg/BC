@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react'
 import CourseCard from '../components/CourseCard/CourseCard'
+import { SkeletonGrid } from '../components/Skeleton/Skeleton'
 import { useCourses } from '../hooks/useCourses'
 import './Courses.css'
 
@@ -12,7 +13,7 @@ const SORT_OPTIONS = [
 ]
 
 const Courses = () => {
-  const { courses } = useCourses()
+  const { courses, loading } = useCourses()
   const [search, setSearch] = useState('')
   const [sortBy, setSortBy] = useState('popular')
   const [showFreeOnly, setShowFreeOnly] = useState(false)
@@ -116,7 +117,9 @@ const Courses = () => {
             </div>
           </div>
 
-          {filtered.length > 0 ? (
+          {loading ? (
+            <SkeletonGrid count={6} />
+          ) : filtered.length > 0 ? (
             <div className="courses-grid-full">
               {filtered.map(course => (
                 <CourseCard key={course.id} course={course} />

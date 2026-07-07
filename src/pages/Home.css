@@ -22,24 +22,24 @@
 }
 
 .orb-1 {
-  width: 600px;
-  height: 600px;
+  width: min(600px, 80vw);
+  height: min(600px, 80vw);
   background: var(--primary);
   top: -200px;
   right: -200px;
 }
 
 .orb-2 {
-  width: 400px;
-  height: 400px;
+  width: min(400px, 60vw);
+  height: min(400px, 60vw);
   background: #1D4ED8;
   bottom: -100px;
   left: -100px;
 }
 
 .orb-3 {
-  width: 300px;
-  height: 300px;
+  width: min(300px, 50vw);
+  height: min(300px, 50vw);
   background: var(--accent);
   top: 50%;
   left: 40%;

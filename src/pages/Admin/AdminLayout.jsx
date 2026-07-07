@@ -14,7 +14,7 @@ const navItems = [
 const AdminLayout = ({ onLogout }) => {
   const [collapsed, setCollapsed] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
+  const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth <= 768)
   const navigate = useNavigate()
   const location = useLocation()
 

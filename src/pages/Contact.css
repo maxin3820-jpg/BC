@@ -311,3 +311,9 @@
   .contact-form-wrapper { padding: 1.25rem; border-radius: var(--radius-lg); }
   .btn-full { padding: 0.875rem; }
 }
+
+@media (max-width: 360px) {
+  .contact-header h1 { font-size: 1.5rem; }
+  .contact-form-wrapper { padding: 1rem; border-radius: var(--radius-md); }
+  .faq-question { font-size: 0.85rem; }
+}
