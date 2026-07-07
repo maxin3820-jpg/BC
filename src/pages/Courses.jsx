@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react'
 import CourseCard from '../components/CourseCard/CourseCard'
-import { courses } from '../data/courses'
+import { useCourses } from '../hooks/useCourses'
 import './Courses.css'
 
 const SORT_OPTIONS = [
@@ -12,6 +12,7 @@ const SORT_OPTIONS = [
 ]
 
 const Courses = () => {
+  const { courses } = useCourses()
   const [search, setSearch] = useState('')
   const [sortBy, setSortBy] = useState('popular')
   const [showFreeOnly, setShowFreeOnly] = useState(false)

@@ -1,11 +1,14 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import CourseCard from '../components/CourseCard/CourseCard'
-import { courses, stats } from '../data/courses'
-import { packs } from './Packs'
+import { stats } from '../data/courses'
+import { useCourses } from '../hooks/useCourses'
+import { usePacks } from '../hooks/usePacks'
 import './Home.css'
 
 const Home = () => {
+  const { courses } = useCourses()
+  const { packs } = usePacks()
   return (
     <div className="home">
 

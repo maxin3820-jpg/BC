@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { usePacks } from '../hooks/usePacks'
 import './Packs.css'
 
 // ── ADD YOUR PACKS HERE ──────────────────────────────────────────────
@@ -110,6 +111,8 @@ const PackCard = ({ pack }) => {
 }
 
 const Packs = () => {
+  const { packs } = usePacks()
+
   return (
     <div className="packs-page">
       {/* Header */}

@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react'
 import { courses as initialCourses } from '../../data/courses'
+import { supabase } from '../../lib/supabase'
 
 const emptyForm = {
   title: '', description: '', price: '', originalPrice: '',
@@ -15,17 +16,46 @@ const AdminCourses = () => {
   const [deleteConfirm, setDeleteConfirm] = useState(null)
   const [toast, setToast] = useState('')
   const [imagePreview, setImagePreview] = useState('')
+  const [imageUploading, setImageUploading] = useState(false)
   const fileInputRef = useRef(null)
 
-  const handleImageUpload = (e) => {
+  const handleImageUpload = async (e) => {
     const file = e.target.files[0]
     if (!file) return
+
+    // Show local preview immediately
     const reader = new FileReader()
-    reader.onloadend = () => {
-      setImagePreview(reader.result)
-      setForm(p => ({ ...p, thumbnail: reader.result }))
-    }
+    reader.onloadend = () => setImagePreview(reader.result)
     reader.readAsDataURL(file)
+
+    // Upload to Supabase Storage
+    setImageUploading(true)
+    try {
+      const ext = file.name.split('.').pop()
+      const fileName = `course-${Date.now()}.${ext}`
+
+      const { error } = await supabase.storage
+        .from('course-images')
+        .upload(fileName, file, { upsert: true })
+
+      if (error) throw error
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('course-images')
+        .getPublicUrl(fileName)
+
+      // Save the public URL (not base64)
+      setForm(p => ({ ...p, thumbnail: publicUrl }))
+      showToast('🖼 Image uploaded to Supabase!')
+    } catch (err) {
+      // Fallback: keep base64 if Supabase not connected yet
+      console.warn('Supabase upload failed, using local preview:', err.message)
+      const reader2 = new FileReader()
+      reader2.onloadend = () => setForm(p => ({ ...p, thumbnail: reader2.result }))
+      reader2.readAsDataURL(file)
+    } finally {
+      setImageUploading(false)
+    }
   }
 
   const filtered = courses.filter(c =>
@@ -40,6 +70,7 @@ const AdminCourses = () => {
   const openAdd = () => {
     setForm(emptyForm)
     setImagePreview('')
+    setImageUploading(false)
     setEditingId(null)
     setShowModal(true)
   }
@@ -50,37 +81,55 @@ const AdminCourses = () => {
       price: course.price?.toString() || '',
       originalPrice: course.originalPrice?.toString() || '',
     })
-    setImagePreview(course.thumbnail?.startsWith('data:') || course.thumbnail?.startsWith('http') ? course.thumbnail : '')
+    setImagePreview(course.thumbnail?.startsWith('http') || course.thumbnail?.startsWith('data:') ? course.thumbnail : '')
+    setImageUploading(false)
     setEditingId(course.id)
     setShowModal(true)
   }
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!form.title.trim()) return
-    if (editingId) {
-      setCourses(prev => prev.map(c => c.id === editingId ? {
-        ...c, ...form,
-        price: parseFloat(form.price) || 0,
-        originalPrice: parseFloat(form.originalPrice) || null,
-        currency: form.currency || 'PKR',
-      } : c))
-      showToast('✅ Course updated successfully!')
-    } else {
-      const newCourse = {
-        ...form,
-        id: Date.now(),
-        price: parseFloat(form.price) || 0,
-        originalPrice: parseFloat(form.originalPrice) || null,
-        currency: form.currency || 'PKR',
-        thumbnail: form.thumbnail || 'linear-gradient(135deg, #1E3A8A 0%, #1D4ED8 100%)',
+    const payload = {
+      title: form.title,
+      description: form.description,
+      price: parseFloat(form.price) || 0,
+      original_price: parseFloat(form.originalPrice) || null,
+      currency: form.currency || 'PKR',
+      thumbnail: form.thumbnail || 'linear-gradient(135deg, #1E3A8A 0%, #1D4ED8 100%)',
+      is_bestseller: form.isBestseller,
+      is_new: form.isNew,
+      is_free: form.isFree,
+    }
+
+    try {
+      if (editingId) {
+        // Try Supabase update
+        await supabase.from('courses').update(payload).eq('id', editingId)
+        setCourses(prev => prev.map(c => c.id === editingId ? { ...c, ...form, ...payload } : c))
+        showToast('✅ Course updated!')
+      } else {
+        // Try Supabase insert
+        const { data, error } = await supabase.from('courses').insert([payload]).select().single()
+        const newCourse = data || { ...payload, id: Date.now() }
+        setCourses(prev => [{ ...newCourse, isBestseller: newCourse.is_bestseller ?? form.isBestseller, isNew: newCourse.is_new ?? form.isNew, isFree: newCourse.is_free ?? form.isFree }, ...prev])
+        showToast('✅ Course added!')
       }
-      setCourses(prev => [newCourse, ...prev])
-      showToast('✅ Course added successfully!')
+    } catch {
+      // Offline fallback — just update local state
+      if (editingId) {
+        setCourses(prev => prev.map(c => c.id === editingId ? { ...c, ...form, price: payload.price, originalPrice: payload.original_price, currency: payload.currency, thumbnail: payload.thumbnail } : c))
+      } else {
+        setCourses(prev => [{ ...form, id: Date.now(), price: payload.price, originalPrice: payload.original_price, thumbnail: payload.thumbnail }, ...prev])
+      }
+      showToast('✅ Saved locally (Supabase not connected)')
     }
     setShowModal(false)
   }
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
+    try {
+      await supabase.from('courses').delete().eq('id', id)
+    } catch { /* offline fallback */ }
     setCourses(prev => prev.filter(c => c.id !== id))
     setDeleteConfirm(null)
     showToast('🗑 Course deleted.')
@@ -206,8 +255,14 @@ const AdminCourses = () => {
               </div>
               <div className="admin-form-group">
                 <label>Course Image</label>
-                <div className="image-upload-area" onClick={() => fileInputRef.current.click()}>
-                  {imagePreview ? (
+                <div className="image-upload-area" onClick={() => !imageUploading && fileInputRef.current.click()}>
+                  {imageUploading ? (
+                    <div className="image-upload-placeholder">
+                      <span className="upload-icon">⏳</span>
+                      <strong>Uploading to Supabase...</strong>
+                      <p>Please wait</p>
+                    </div>
+                  ) : imagePreview ? (
                     <div className="image-preview-wrap">
                       <img src={imagePreview} alt="Preview" className="image-preview" />
                       <div className="image-preview-overlay">
