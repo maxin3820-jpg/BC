@@ -4,20 +4,29 @@ import './CourseCard.css'
 const CourseCard = ({ course }) => {
   const { title, description, price, originalPrice, thumbnail, isFree, isNew, isBestseller } = course
 
-  const displayPrice = isFree ? 'Free' : `$${price}`
+  const currency = course.currency || 'PKR'
+  const symbol = currency === 'PKR' ? 'PKR ' : '$'
+  const displayPrice = isFree ? 'Free' : `${symbol}${price}`
   const discount = originalPrice && !isFree ? Math.round((1 - price / originalPrice) * 100) : null
 
   const whatsappNumber = '923036326202'
   const whatsappMsg = encodeURIComponent(`Hi! I'm interested in the course: "${title}" — priced at ${displayPrice}. Can you help me enroll?`)
   const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMsg}`
 
+  const isImage = thumbnail && (thumbnail.startsWith('http') || thumbnail.startsWith('data:') || thumbnail.startsWith('/'))
+
   return (
     <div className="course-card">
       {/* Thumbnail */}
-      <div
-        className="card-thumb"
-        style={{ background: thumbnail || 'linear-gradient(135deg, #1E3A8A, #1D4ED8)' }}
-      >
+      <div className="card-thumb">
+        {isImage ? (
+          <img src={thumbnail} alt={title} className="card-thumb-img" />
+        ) : (
+          <div
+            className="card-thumb-bg"
+            style={{ background: thumbnail || 'linear-gradient(135deg, #1E3A8A, #1D4ED8)' }}
+          />
+        )}
         <div className="card-badges">
           {isBestseller && <span className="badge badge-warning">Bestseller</span>}
           {isNew && <span className="badge badge-success">New</span>}
@@ -35,7 +44,7 @@ const CourseCard = ({ course }) => {
           <span className="price-current">{displayPrice}</span>
           {originalPrice && !isFree && (
             <>
-              <span className="price-original">${originalPrice}</span>
+              <span className="price-original">{symbol}{originalPrice}</span>
               <span className="price-discount">-{discount}%</span>
             </>
           )}

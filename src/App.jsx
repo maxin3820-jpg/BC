@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
+import ScrollToTop from './components/ScrollToTop'
 import Navbar from './components/Navbar/Navbar'
 import Footer from './components/Footer/Footer'
 import Home from './pages/Home'
 import Courses from './pages/Courses'
-import About from './pages/About'
+import Packs from './pages/Packs'
 import Contact from './pages/Contact'
 import NotFound from './pages/NotFound'
 import AdminLogin from './pages/Admin/AdminLogin'
@@ -23,12 +24,13 @@ function App() {
 
   return (
     <div className="app">
+      <ScrollToTop />
       {!isAdminRoute && <Navbar />}
       <main className={isAdminRoute ? '' : 'main-content'}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/courses" element={<Courses />} />
-          <Route path="/about" element={<About />} />
+          <Route path="/packs" element={<Packs />} />
           <Route path="/contact" element={<Contact />} />
 
           <Route path="/admin/login" element={<AdminLogin onLogin={() => setIsAdmin(true)} />} />

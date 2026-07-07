@@ -30,7 +30,7 @@ const Navbar = () => {
         <nav className={`navbar-links ${menuOpen ? 'open' : ''}`}>
           <NavLink to="/" end>Home</NavLink>
           <NavLink to="/courses">Courses</NavLink>
-          <NavLink to="/about">About</NavLink>
+          <NavLink to="/packs">Packs</NavLink>
           <NavLink to="/contact">Contact</NavLink>
         </nav>
 

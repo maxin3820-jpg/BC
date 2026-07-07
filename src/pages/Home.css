@@ -331,3 +331,9 @@
   .cta-actions { flex-direction: column; align-items: stretch; }
   .cta-actions .btn { width: 100%; justify-content: center; }
 }
+
+/* ===== PACKS HOME SECTION ===== */
+.packs-home-section {
+  background: linear-gradient(180deg, transparent 0%, rgba(29,78,216,0.03) 50%, transparent 100%);
+  border-top: 1px solid var(--border);
+}
