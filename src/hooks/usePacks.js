@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
-import { packs as localPacks } from '../pages/Packs'
+import { packs as localPacks } from '../data/packs'
 
 export const usePacks = () => {
   const [packs, setPacks] = useState(localPacks)
