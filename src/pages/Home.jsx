@@ -35,7 +35,7 @@ const Home = () => {
           </p>
           <div className="hero-actions">
             <Link to="/courses" className="btn btn-primary btn-lg">Explore Courses →</Link>
-            <Link to="/about" className="btn btn-secondary btn-lg">How It Works</Link>
+            <Link to="/contact" className="btn btn-secondary btn-lg">Contact Us</Link>
           </div>
           <div className="hero-trust">
             <div className="trust-avatars">

@@ -25,8 +25,7 @@ const Courses = () => {
       const q = search.toLowerCase()
       result = result.filter(c =>
         c.title.toLowerCase().includes(q) ||
-        c.instructor.toLowerCase().includes(q) ||
-        c.tags.some(t => t.toLowerCase().includes(q))
+        (c.description || '').toLowerCase().includes(q)
       )
     }
 
@@ -35,11 +34,11 @@ const Courses = () => {
     }
 
     switch (sortBy) {
-      case 'rating':     result.sort((a, b) => b.rating - a.rating); break
+      case 'rating':     result.sort((a, b) => (b.rating || 0) - (a.rating || 0)); break
       case 'newest':     result.sort((a, b) => (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0)); break
-      case 'price-low':  result.sort((a, b) => a.price - b.price); break
-      case 'price-high': result.sort((a, b) => b.price - a.price); break
-      default:           result.sort((a, b) => b.students - a.students)
+      case 'price-low':  result.sort((a, b) => (a.price || 0) - (b.price || 0)); break
+      case 'price-high': result.sort((a, b) => (b.price || 0) - (a.price || 0)); break
+      default:           result.sort((a, b) => (b.isBestseller ? 1 : 0) - (a.isBestseller ? 1 : 0))
     }
 
     return result
