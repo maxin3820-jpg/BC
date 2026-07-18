@@ -15,11 +15,11 @@
   box-shadow: var(--shadow-lg);
 }
 
-/* Thumbnail — square aspect ratio */
+/* Thumbnail — 16:9 aspect ratio */
 .card-thumb {
   position: relative;
   width: 100%;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 16 / 9;
   overflow: hidden;
   background: linear-gradient(135deg, #1E3A8A, #1D4ED8);
 }

@@ -50,11 +50,11 @@
   box-shadow: var(--shadow-lg);
 }
 
-/* Thumbnail — square */
+/* Thumbnail — 16:9 */
 .pack-thumb {
   position: relative;
   width: 100%;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 16 / 9;
   overflow: hidden;
 }
 
