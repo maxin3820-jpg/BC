@@ -3,7 +3,7 @@ import { usePacks } from '../hooks/usePacks'
 import './Packs.css'
 
 const PackCard = ({ pack }) => {
-  const symbol = pack.currency === 'PKR' ? 'PKR ' : '$'
+  const symbol = 'PKR '
   const discount = pack.originalPrice ? Math.round((1 - pack.price / pack.originalPrice) * 100) : null
   const whatsappMsg = encodeURIComponent(`Hi! I'm interested in the pack: "${pack.title}" — priced at ${symbol}${pack.price}. Can you help me get it?`)
   const whatsappLink = `https://wa.me/923036326202?text=${whatsappMsg}`

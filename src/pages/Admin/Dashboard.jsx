@@ -59,7 +59,7 @@ const Dashboard = () => {
             {courses.map(course => (
               <div key={course.id} className="admin-table-row" style={{ gridTemplateColumns: '2fr 1fr 1fr' }}>
                 <span className="atc-title">{course.title}</span>
-                <span>{course.isFree ? 'Free' : `$${course.price}`}</span>
+                <span>{course.isFree ? 'Free' : `PKR ${course.price}`}</span>
                 <span>
                   {course.isBestseller && <span className="mini-badge bestseller">⭐</span>}
                   {course.isNew && <span className="mini-badge new-badge">New</span>}

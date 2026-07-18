@@ -4,7 +4,7 @@ import { supabase } from '../../lib/supabase'
 
 const emptyForm = {
   title: '', description: '', price: '', originalPrice: '',
-  currency: 'PKR', thumbnail: '', isBestseller: false, isNew: false, isFree: false,
+  thumbnail: '', isBestseller: false, isNew: false, isFree: false,
 }
 
 const AdminCourses = () => {
@@ -95,7 +95,7 @@ const AdminCourses = () => {
       description: form.description,
       price: parseFloat(form.price) || 0,
       original_price: parseFloat(form.originalPrice) || null,
-      currency: form.currency || 'PKR',
+      currency: 'PKR',
       thumbnail: form.thumbnail || 'linear-gradient(135deg, #1E3A8A 0%, #1D4ED8 100%)',
       is_bestseller: form.isBestseller,
       is_new: form.isNew,
@@ -188,7 +188,7 @@ const AdminCourses = () => {
                   </div>
                 </div>
               </span>
-              <span style={{ color: 'var(--adm-text)', fontWeight: 600 }}>{course.isFree ? 'Free' : `${course.currency === 'PKR' ? 'PKR ' : '$'}${course.price}`}</span>
+              <span style={{ color: 'var(--adm-text)', fontWeight: 600 }}>{course.isFree ? 'Free' : `PKR ${course.price}`}</span>
               <span style={{ color: 'var(--adm-accent)', fontSize: '0.8rem', fontWeight: 600 }}>● Active</span>
               <span className="admin-actions">
                 <button className="admin-btn-icon edit" onClick={() => openEdit(course)}>✏️</button>
@@ -227,33 +227,23 @@ const AdminCourses = () => {
               </div>
               <div className="admin-form-row">
                 <div className="admin-form-group">
-                  <label>Currency</label>
-                  <select
-                    value={form.currency}
-                    onChange={e => setForm(p => ({ ...p, currency: e.target.value }))}
-                  >
-                    <option value="PKR">PKR — Pakistani Rupee</option>
-                    <option value="USD">USD — US Dollar</option>
-                  </select>
-                </div>
-                <div className="admin-form-group">
-                  <label>Price</label>
+                  <label>Price (PKR)</label>
                   <input
                     type="number"
                     value={form.price}
                     onChange={e => setForm(p => ({ ...p, price: e.target.value }))}
-                    placeholder={form.currency === 'PKR' ? '2999' : '29.99'}
+                    placeholder="2999"
                   />
                 </div>
-              </div>
-              <div className="admin-form-group">
-                <label>Original Price (for discount display)</label>
-                <input
-                  type="number"
-                  value={form.originalPrice}
-                  onChange={e => setForm(p => ({ ...p, originalPrice: e.target.value }))}
-                  placeholder={form.currency === 'PKR' ? '9999' : '99.99'}
-                />
+                <div className="admin-form-group">
+                  <label>Original Price (PKR)</label>
+                  <input
+                    type="number"
+                    value={form.originalPrice}
+                    onChange={e => setForm(p => ({ ...p, originalPrice: e.target.value }))}
+                    placeholder="9999"
+                  />
+                </div>
               </div>
               <div className="admin-form-group">
                 <label>Course Image</label>

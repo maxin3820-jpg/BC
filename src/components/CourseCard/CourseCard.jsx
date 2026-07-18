@@ -4,8 +4,7 @@ import './CourseCard.css'
 const CourseCard = ({ course }) => {
   const { title, description, price, originalPrice, thumbnail, isFree, isNew, isBestseller } = course
 
-  const currency = course.currency || 'PKR'
-  const symbol = currency === 'PKR' ? 'PKR ' : '$'
+  const symbol = 'PKR '
   const displayPrice = isFree ? 'Free' : `${symbol}${price}`
   const discount = originalPrice && !isFree ? Math.round((1 - price / originalPrice) * 100) : null
 
