@@ -123,6 +123,8 @@
   margin-top: 0.25rem;
   width: 100%;
   box-sizing: border-box;
+  /* touch target */
+  min-height: 44px;
 }
 
 .whatsapp-btn:hover {
@@ -131,22 +133,32 @@
   box-shadow: 0 4px 15px rgba(37,211,102,0.4);
 }
 
-/* ===== RESPONSIVE ===== */
+/* ===== 1024px — LARGE TABLET ===== */
+@media (max-width: 1024px) {
+  .card-thumb { min-height: 170px; }
+}
+
+/* ===== 768px — TABLET ===== */
 @media (max-width: 768px) {
   .course-card:hover { transform: none; }
   .card-thumb { min-height: 160px; }
+  .card-thumb-bg { min-height: 160px; }
   .price-current { font-size: var(--font-size-lg); }
 }
 
+/* ===== 480px — LARGE MOBILE ===== */
 @media (max-width: 480px) {
   .card-thumb { min-height: 140px; }
+  .card-thumb-bg { min-height: 140px; }
   .card-body { padding: 1rem; gap: 0.6rem; }
   .card-title { font-size: var(--font-size-sm); }
   .price-current { font-size: var(--font-size-base); }
   .whatsapp-btn { font-size: 0.8rem; padding: 0.65rem 0.75rem; }
 }
 
+/* ===== 360px — SMALL MOBILE ===== */
 @media (max-width: 360px) {
-  .card-body { padding: 0.875rem; }
-  .whatsapp-btn { font-size: 0.75rem; }
+  .card-body { padding: 0.875rem; gap: 0.5rem; }
+  .whatsapp-btn { font-size: 0.75rem; padding: 0.65rem; }
+  .card-desc { -webkit-line-clamp: 2; }
 }

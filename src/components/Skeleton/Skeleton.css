@@ -1,3 +1,4 @@
+/* Skeleton grid matches the courses/packs grid breakpoints */
 .skeleton-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -33,7 +34,7 @@
 .w40 { width: 40%; }
 
 .skeleton-btn {
-  height: 42px;
+  height: 44px;
   border-radius: var(--radius-md);
   margin-top: 0.5rem;
 }
@@ -55,9 +56,26 @@
   100% { background-position: -200% 0; }
 }
 
-@media (max-width: 768px) {
+/* ===== 1024px — LARGE TABLET ===== */
+@media (max-width: 1024px) {
   .skeleton-grid { grid-template-columns: repeat(2, 1fr); }
+  .skeleton-thumb { height: 170px; }
 }
+
+/* ===== 768px — TABLET ===== */
+@media (max-width: 768px) {
+  .skeleton-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+  .skeleton-thumb { height: 160px; }
+}
+
+/* ===== 480px — LARGE MOBILE ===== */
 @media (max-width: 480px) {
-  .skeleton-grid { grid-template-columns: 1fr; }
+  .skeleton-grid { grid-template-columns: 1fr; gap: 1rem; }
+  .skeleton-thumb { height: 140px; }
+  .skeleton-body { padding: 1rem; }
+}
+
+/* ===== 360px — SMALL MOBILE ===== */
+@media (max-width: 360px) {
+  .skeleton-body { padding: 0.875rem; gap: 0.6rem; }
 }
