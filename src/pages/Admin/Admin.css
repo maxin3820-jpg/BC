@@ -648,3 +648,119 @@
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
 }
+
+/* ===== ADMIN HAMBURGER ===== */
+.admin-hamburger {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  transition: background 0.2s ease;
+  flex-shrink: 0;
+}
+.admin-hamburger:hover { background: var(--adm-hover); }
+.admin-hamburger span {
+  display: block;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--adm-text);
+}
+.admin-hamburger span:nth-child(1) { width: 20px; }
+.admin-hamburger span:nth-child(2) { width: 14px; align-self: flex-start; margin-left: 3px; }
+.admin-hamburger span:nth-child(3) { width: 20px; }
+
+.admin-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+}
+
+/* ===== OVERRIDE RESPONSIVE — TABLET+ (sidebar slides off, hamburger shows) ===== */
+@media (max-width: 1024px) {
+  .admin-main { margin-left: 0 !important; }
+  .admin-layout.collapsed .admin-main { margin-left: 0 !important; }
+
+  .admin-sidebar {
+    position: fixed !important;
+    top: 0; left: 0; bottom: 0;
+    width: 280px !important;
+    transform: translateX(-100%) !important;
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1) !important;
+    z-index: 200;
+    box-shadow: none;
+    overflow-y: auto;
+  }
+  .admin-sidebar.mobile-open {
+    transform: translateX(0) !important;
+    box-shadow: 4px 0 30px rgba(26,26,46,0.15);
+  }
+
+  .nav-label { display: block !important; }
+  .admin-logo span { display: block !important; }
+  .admin-logout-btn span:last-child { display: block !important; }
+
+  .admin-topbar { padding: 0.875rem 1.25rem; }
+  .admin-content { padding: 1.25rem; }
+  .admin-stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .admin-two-col { grid-template-columns: 1fr; }
+  .settings-grid { grid-template-columns: 1fr; }
+  .messages-layout { grid-template-columns: 1fr; }
+  .quick-actions { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ===== MOBILE OVERLAY (updated z-index) ===== */
+.admin-mobile-overlay {
+  position: fixed !important;
+  inset: 0;
+  background: rgba(26,26,46,0.45);
+  z-index: 199 !important;
+  backdrop-filter: blur(3px);
+  animation: admFadeIn2 0.2s ease;
+}
+@keyframes admFadeIn2 {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (max-width: 768px) {
+  .admin-topbar { padding: 0.75rem 1rem; }
+  .admin-content { padding: 1rem; }
+  .admin-stats-grid { grid-template-columns: 1fr 1fr; gap: 0.875rem; }
+  .admin-form-row { grid-template-columns: 1fr; }
+  .admin-section-title { flex-direction: column; gap: 0.875rem; align-items: flex-start; }
+  .admin-modal-overlay { padding: 0 !important; align-items: flex-end !important; }
+  .admin-modal { border-radius: 20px 20px 0 0 !important; max-height: 92vh !important; max-width: 100% !important; width: 100% !important; }
+  .admin-modal-sm { border-radius: 20px 20px 0 0 !important; max-width: 100% !important; }
+  .admin-btn-primary, .admin-btn-secondary, .admin-btn-danger { min-height: 44px; }
+  .admin-nav-item { min-height: 52px; }
+  .filter-tab { min-height: 40px; }
+  .admin-btn-icon { width: 40px; height: 40px; }
+}
+
+@media (max-width: 480px) {
+  .admin-content { padding: 0.875rem; }
+  .admin-card { padding: 1rem; }
+  .admin-card-header { flex-direction: column; align-items: flex-start; gap: 0.625rem; }
+  .admin-search { width: 100% !important; min-width: unset !important; }
+  .admin-user-name { display: none !important; }
+  .admin-view-site { display: none !important; }
+  .quick-actions { grid-template-columns: 1fr 1fr; }
+  .messages-list { max-height: 300px; overflow-y: auto; }
+}
+
+@media (max-width: 360px) {
+  .admin-content { padding: 0.75rem; }
+  .admin-stats-grid { grid-template-columns: 1fr; gap: 0.75rem; }
+  .admin-card { padding: 0.875rem; }
+  .admin-modal-body { padding: 1rem; }
+  .quick-actions { grid-template-columns: 1fr 1fr; }
+  .asc-value { font-size: 1.2rem; }
+}

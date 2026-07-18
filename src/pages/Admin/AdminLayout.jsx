@@ -11,23 +11,37 @@ const navItems = [
   { to: '/admin/settings', icon: '⚙️', label: 'Settings' },
 ]
 
+const getIsMobile = () => typeof window !== 'undefined' && window.innerWidth <= 1024
+
 const AdminLayout = ({ onLogout }) => {
   const [collapsed, setCollapsed] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth <= 768)
+  const [isMobile, setIsMobile] = useState(getIsMobile)
   const navigate = useNavigate()
   const location = useLocation()
 
   useEffect(() => {
-    const onResize = () => setIsMobile(window.innerWidth <= 768)
+    const onResize = () => {
+      const mobile = window.innerWidth <= 1024
+      setIsMobile(mobile)
+      if (!mobile) setMobileOpen(false)
+    }
     window.addEventListener('resize', onResize)
     return () => window.removeEventListener('resize', onResize)
   }, [])
 
-  // Close mobile sidebar on route change
+  // Close sidebar on route change on mobile
   useEffect(() => {
-    setMobileOpen(false)
-  }, [location])
+    if (isMobile) setMobileOpen(false)
+  }, [location, isMobile])
+
+  // Lock body scroll when sidebar open on mobile
+  useEffect(() => {
+    if (isMobile) {
+      document.body.style.overflow = mobileOpen ? 'hidden' : ''
+    }
+    return () => { document.body.style.overflow = '' }
+  }, [mobileOpen, isMobile])
 
   const handleLogout = () => {
     localStorage.removeItem('birsil_admin')
@@ -35,38 +49,29 @@ const AdminLayout = ({ onLogout }) => {
     navigate('/')
   }
 
-  const sidebarClass = [
-    'admin-sidebar',
-    isMobile && mobileOpen ? 'mobile-open' : '',
-    !isMobile && collapsed ? 'collapsed-sidebar' : '',
-  ].join(' ')
-
   const isCollapsed = !isMobile && collapsed
 
   return (
     <div className={`admin-layout ${isCollapsed ? 'collapsed' : ''}`}>
+
       {/* Mobile overlay */}
       {isMobile && mobileOpen && (
-        <div
-          className="admin-mobile-overlay"
-          onClick={() => setMobileOpen(false)}
-        />
+        <div className="admin-mobile-overlay" onClick={() => setMobileOpen(false)} />
       )}
 
       {/* Sidebar */}
-      <aside className={sidebarClass}>
+      <aside className={`admin-sidebar ${isMobile && mobileOpen ? 'mobile-open' : ''}`}>
         <div className="admin-sidebar-header">
           <div className="admin-logo">
             <div className="logo-icon">B</div>
             {!isCollapsed && <span>Birsil <strong>Admin</strong></span>}
           </div>
-          {!isMobile && (
-            <button className="collapse-btn" onClick={() => setCollapsed(!collapsed)}>
+          {!isMobile ? (
+            <button className="collapse-btn" onClick={() => setCollapsed(!collapsed)} aria-label="Toggle sidebar">
               {collapsed ? '→' : '←'}
             </button>
-          )}
-          {isMobile && (
-            <button className="collapse-btn" onClick={() => setMobileOpen(false)}>✕</button>
+          ) : (
+            <button className="collapse-btn" onClick={() => setMobileOpen(false)} aria-label="Close menu">✕</button>
           )}
         </div>
 
@@ -87,24 +92,25 @@ const AdminLayout = ({ onLogout }) => {
         </div>
       </aside>
 
-      {/* Main */}
+      {/* Main content */}
       <div className="admin-main">
         <header className="admin-topbar">
-          <div className="admin-topbar-left" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <div className="admin-topbar-left">
             {isMobile && (
               <button
-                className="collapse-btn"
+                className="admin-hamburger"
                 onClick={() => setMobileOpen(true)}
-                aria-label="Open menu"
-                style={{ fontSize: '1.1rem', padding: '0.4rem 0.6rem' }}
+                aria-label="Open admin menu"
               >
-                ☰
+                <span></span>
+                <span></span>
+                <span></span>
               </button>
             )}
             <h1 className="admin-page-title">Admin Panel</h1>
           </div>
           <div className="admin-topbar-right">
-            <a href="/" target="_blank" className="admin-view-site">
+            <a href="/" target="_blank" rel="noopener noreferrer" className="admin-view-site">
               🌐 View Site
             </a>
             <div className="admin-user">
