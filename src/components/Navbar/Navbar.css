@@ -105,49 +105,58 @@
   display: none;
   flex-direction: column;
   justify-content: center;
-  align-items: flex-start;
-  gap: 5px;
-  background: none;
-  border: none;
+  align-items: center;
+  gap: 4px;
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
   cursor: pointer;
-  padding: 10px;
-  width: 44px;
-  height: 44px;
+  padding: 0;
+  width: 46px;
+  height: 36px;
   flex-shrink: 0;
   z-index: 1001;
   margin-left: auto;
-  border-radius: 10px;
-  transition: background 0.2s ease;
+  border-radius: 100px;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 8px rgba(30,58,138,0.08);
 }
 
-.hamburger:hover { background: rgba(30,58,138,0.08); }
+.hamburger:hover {
+  border-color: var(--primary);
+  background: rgba(30,58,138,0.06);
+  box-shadow: 0 2px 12px rgba(30,58,138,0.15);
+  transform: scale(1.04);
+}
 
 .hamburger span {
   display: block;
-  height: 2.5px;
+  height: 2px;
   border-radius: 10px;
-  background: var(--primary);
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
   transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-  transform-origin: left center;
+  transform-origin: center;
 }
 
-/* Staggered widths — modern feel */
-.hamburger span:nth-child(1) { width: 22px; }
-.hamburger span:nth-child(2) { width: 14px; }
-.hamburger span:nth-child(3) { width: 18px; }
+.hamburger span:nth-child(1) { width: 18px; }
+.hamburger span:nth-child(2) { width: 22px; }
+.hamburger span:nth-child(3) { width: 14px; }
 
-/* X close animation */
+/* Open state — morphs to X */
+.hamburger.open {
+  border-color: var(--primary);
+  background: rgba(30,58,138,0.08);
+}
 .hamburger.open span:nth-child(1) {
-  width: 22px;
-  transform: rotate(45deg) translateY(1px);
+  width: 20px;
+  transform: translateY(6px) rotate(45deg);
 }
 .hamburger.open span:nth-child(2) {
-  width: 0;
   opacity: 0;
+  width: 0;
 }
 .hamburger.open span:nth-child(3) {
-  width: 22px;
-  transform: rotate(-45deg) translateY(-1px);
+  width: 20px;
+  transform: translateY(-6px) rotate(-45deg);
 }
 
 /* ===== MOBILE BACKDROP ===== */
