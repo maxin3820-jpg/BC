@@ -15,22 +15,23 @@
   box-shadow: var(--shadow-lg);
 }
 
-/* Thumbnail */
+/* Thumbnail — square aspect ratio */
 .card-thumb {
   position: relative;
-  min-height: 180px;
+  width: 100%;
+  aspect-ratio: 1 / 1;
   overflow: hidden;
   background: linear-gradient(135deg, #1E3A8A, #1D4ED8);
 }
 
 .card-thumb-bg {
   width: 100%;
-  min-height: 180px;
+  height: 100%;
 }
 
 .card-thumb-img {
   width: 100%;
-  height: auto;
+  height: 100%;
   object-fit: cover;
   display: block;
   transition: transform 0.4s ease;
@@ -133,30 +134,23 @@
   box-shadow: 0 4px 15px rgba(37,211,102,0.4);
 }
 
-/* ===== 1024px — LARGE TABLET ===== */
+/* ===== RESPONSIVE ===== */
 @media (max-width: 1024px) {
-  .card-thumb { min-height: 170px; }
+  .course-card:hover { transform: none; }
 }
 
-/* ===== 768px — TABLET ===== */
 @media (max-width: 768px) {
   .course-card:hover { transform: none; }
-  .card-thumb { min-height: 160px; }
-  .card-thumb-bg { min-height: 160px; }
   .price-current { font-size: var(--font-size-lg); }
 }
 
-/* ===== 480px — LARGE MOBILE ===== */
 @media (max-width: 480px) {
-  .card-thumb { min-height: 140px; }
-  .card-thumb-bg { min-height: 140px; }
   .card-body { padding: 1rem; gap: 0.6rem; }
   .card-title { font-size: var(--font-size-sm); }
   .price-current { font-size: var(--font-size-base); }
   .whatsapp-btn { font-size: 0.8rem; padding: 0.65rem 0.75rem; }
 }
 
-/* ===== 360px — SMALL MOBILE ===== */
 @media (max-width: 360px) {
   .card-body { padding: 0.875rem; gap: 0.5rem; }
   .whatsapp-btn { font-size: 0.75rem; padding: 0.65rem; }

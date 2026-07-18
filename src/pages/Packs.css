@@ -50,16 +50,17 @@
   box-shadow: var(--shadow-lg);
 }
 
-/* Thumbnail */
+/* Thumbnail — square */
 .pack-thumb {
   position: relative;
-  min-height: 180px;
+  width: 100%;
+  aspect-ratio: 1 / 1;
   overflow: hidden;
 }
 
 .pack-thumb-bg {
   width: 100%;
-  height: 180px;
+  height: 100%;
 }
 
 .pack-thumb img {
@@ -218,8 +219,6 @@
 @media (max-width: 480px) {
   .packs-grid { grid-template-columns: 1fr; gap: 1rem; }
   .packs-header { padding: 2rem 0; }
-  .pack-thumb { min-height: 160px; }
-  .pack-thumb-bg { height: 160px; }
   .pack-card:hover { transform: none; }
 }
 

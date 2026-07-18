@@ -181,17 +181,17 @@ const Home = () => {
                 </div>
               </div>
               <div className="visual-card secondary-visual v2">
-                <div className="vc-icon">🏆</div>
-                <div>
-                  <strong>Certificates</strong>
-                  <p>Industry recognized</p>
-                </div>
-              </div>
-              <div className="visual-card secondary-visual v3">
                 <div className="vc-icon">♾️</div>
                 <div>
                   <strong>Lifetime Access</strong>
                   <p>Learn at your pace</p>
+                </div>
+              </div>
+              <div className="visual-card secondary-visual v3">
+                <div className="vc-icon">💬</div>
+                <div>
+                  <strong>Expert Support</strong>
+                  <p>Get help when you need it</p>
                 </div>
               </div>
             </div>
@@ -220,7 +220,6 @@ const Home = () => {
 const whyFeatures = [
   { icon: '🎥', title: 'HD Video Lessons', desc: 'Crystal-clear video content with subtitles in multiple languages.' },
   { icon: '📱', title: 'Learn Anywhere', desc: 'Access courses on mobile, tablet, or desktop — anytime, anywhere.' },
-  { icon: '🏆', title: 'Earn Certificates', desc: 'Get industry-recognized certificates upon course completion.' },
   { icon: '💬', title: 'Community Support', desc: 'Ask questions and get answers from instructors and peers.' },
 ]
 

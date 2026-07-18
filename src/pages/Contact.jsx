@@ -2,11 +2,11 @@ import React, { useState } from 'react'
 import './Contact.css'
 
 const faqs = [
-  { q: 'How do I enroll in a course?', a: 'Click "Enroll Now" on any course page. Free courses are immediately accessible, while paid courses require a one-time purchase.' },
-  { q: 'Do I get a certificate after completing a course?', a: 'Yes! Every completed course earns you a certificate of completion that you can share on LinkedIn and your resume.' },
+  { q: 'How do I enroll in a course?', a: 'Click "Buy on WhatsApp" on any course card and send us a message. We will guide you through the enrollment process.' },
   { q: 'Can I access courses on mobile?', a: 'Absolutely. Birsil Courses is fully responsive and works on any device — phone, tablet, or desktop.' },
   { q: 'What is the refund policy?', a: 'We offer a 30-day money-back guarantee on all paid courses, no questions asked.' },
   { q: 'How long do I have access to a course?', a: 'You get lifetime access to any course you enroll in, including all future updates.' },
+  { q: 'How do I pay for a course?', a: 'Contact us via WhatsApp and we will share the available payment methods.' },
 ]
 
 const Contact = () => {
