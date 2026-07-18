@@ -28,15 +28,6 @@ const PackCard = ({ pack }) => {
         <h3 className="pack-title">{pack.title}</h3>
         <p className="pack-desc">{pack.description}</p>
 
-        <div className="pack-includes">
-          <p className="pack-includes-label">What's included:</p>
-          <ul>
-            {pack.items.map((item, i) => (
-              <li key={i}><span className="pack-check">✓</span> {item}</li>
-            ))}
-          </ul>
-        </div>
-
         <div className="pack-price-row">
           <div className="pack-price">
             <span className="price-current">{symbol}{pack.price}</span>
