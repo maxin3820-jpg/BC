@@ -19,13 +19,6 @@ const Footer = () => {
               <span>Birsil <strong>Courses</strong></span>
             </Link>
             <p>Learn new skills and grab premium digital products. Grow your career with Birsil.</p>
-            <div className="social-links">
-              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter" className="social-btn">𝕏</a>
-              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="social-btn">▶</a>
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="social-btn">in</a>
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="social-btn">◎</a>
-              <a href={WHATSAPP} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="social-btn">💬</a>
-            </div>
           </div>
 
           {/* Platform */}
