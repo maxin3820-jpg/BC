@@ -25,26 +25,19 @@
 
 .card-thumb-bg {
   width: 100%;
-  height: 100%;
+  min-height: 180px;
 }
 
 .card-thumb-img {
   width: 100%;
-  height: 100%;
-  object-fit: contain;
+  height: auto;
+  object-fit: cover;
   display: block;
   transition: transform 0.4s ease;
 }
 
 .course-card:hover .card-thumb-img {
-  transform: scale(1.05);
-}
-
-.card-thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
+  transform: scale(1.03);
 }
 
 .card-badges {
@@ -88,6 +81,7 @@
   align-items: center;
   gap: 0.5rem;
   margin-top: auto;
+  flex-wrap: wrap;
 }
 
 .price-current {
@@ -127,6 +121,8 @@
   font-family: var(--font);
   transition: var(--transition);
   margin-top: 0.25rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .whatsapp-btn:hover {
@@ -135,30 +131,22 @@
   box-shadow: 0 4px 15px rgba(37,211,102,0.4);
 }
 
-/* Responsive */
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .course-card:hover { transform: none; }
+  .card-thumb { min-height: 160px; }
+  .price-current { font-size: var(--font-size-lg); }
+}
+
 @media (max-width: 480px) {
-  .card-thumb {
-  position: relative;
-  min-height: 180px;
-  overflow: hidden;
-  background: linear-gradient(135deg, #1E3A8A, #1D4ED8);
+  .card-thumb { min-height: 140px; }
+  .card-body { padding: 1rem; gap: 0.6rem; }
+  .card-title { font-size: var(--font-size-sm); }
+  .price-current { font-size: var(--font-size-base); }
+  .whatsapp-btn { font-size: 0.8rem; padding: 0.65rem 0.75rem; }
 }
 
-.card-thumb-bg {
-  width: 100%;
-  height: 100%;
-}
-
-.card-thumb-img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-  transition: transform 0.4s ease;
-}
-
-.course-card:hover .card-thumb-img {
-  transform: scale(1.05);
-}
-  .card-body { padding: 1rem; }
+@media (max-width: 360px) {
+  .card-body { padding: 0.875rem; }
+  .whatsapp-btn { font-size: 0.75rem; }
 }
