@@ -81,9 +81,6 @@ const Navbar = () => {
               <NavLink to="/contact" onClick={() => setMenuOpen(false)}>
                 <span className="md-icon">💬</span> Contact
               </NavLink>
-              <Link to="/admin" className="md-admin" onClick={() => setMenuOpen(false)}>
-                <span className="md-icon">⚙️</span> Admin Panel
-              </Link>
             </div>
           </div>
         </div>
