@@ -280,3 +280,95 @@
   .navbar-links { top: 55px; }
   .navbar-links a { font-size: 0.9rem; padding: 0.75rem 0.875rem; }
 }
+
+/* ===== 3-DOT MENU — MOBILE ONLY ===== */
+.dots-menu {
+  display: none; /* hidden on desktop */
+  position: relative;
+}
+
+/* Show only on mobile */
+@media (max-width: 768px) {
+  .dots-menu { display: block; }
+}
+
+/* Trigger button — vertical 3 dots */
+.dots-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.dots-btn span {
+  display: block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--text-primary);
+  transition: all 0.2s ease;
+}
+
+.dots-btn:hover,
+.dots-btn.active {
+  background: rgba(30,58,138,0.09);
+}
+
+.dots-btn.active span {
+  background: var(--primary);
+}
+
+/* Dropdown */
+.dots-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 200px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(26,26,46,0.14);
+  padding: 0.5rem;
+  z-index: 1002;
+  animation: dotsSlideIn 0.18s ease;
+  backdrop-filter: blur(12px);
+}
+
+@keyframes dotsSlideIn {
+  from { opacity: 0; transform: translateY(-6px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Links inside dropdown */
+.dots-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0.875rem;
+  border-radius: 10px;
+  text-decoration: none;
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+
+.dots-link:hover {
+  background: rgba(30,58,138,0.07);
+  color: var(--primary);
+}
+
+.dots-link-icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
