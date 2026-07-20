@@ -1,4 +1,4 @@
-/* ===== ADMIN — LIGHT THEME ===== */
+/* ===== ADMIN — MATCHES WEBSITE THEME ===== */
 :root {
   --adm-bg: #EAEAF0;
   --adm-card: #F0F0F6;
@@ -9,8 +9,8 @@
   --adm-text: #1A1A2E;
   --adm-text2: #44445A;
   --adm-text3: #70708A;
-  --adm-primary: #1D4ED8;
-  --adm-primary2: #1E3A8A;
+  --adm-primary: #1E3A8A;
+  --adm-primary2: #1D4ED8;
   --adm-accent: #2DC49A;
   --adm-gold: #C88A00;
   --adm-red: #E85050;
@@ -24,9 +24,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--adm-bg);
+  background: var(--bg, #EAEAF0);
   padding: 2rem;
-  background-image: radial-gradient(ellipse at 20% 50%, rgba(29,78,216,0.06) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(6,182,212,0.04) 0%, transparent 50%);
+  background-image: radial-gradient(ellipse at 20% 50%, rgba(30,58,138,0.06) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(29,78,216,0.04) 0%, transparent 50%);
 }
 
 .admin-login-card {
@@ -134,9 +134,9 @@
   border-color: var(--adm-border2);
 }
 .admin-nav-item.active {
-  background: rgba(29,78,216,0.15); color: #60A5FA;
-  border-color: rgba(29,78,216,0.35);
-  box-shadow: inset 0 0 20px rgba(29,78,216,0.08);
+  background: rgba(30,58,138,0.1); color: var(--adm-primary);
+  border-color: rgba(30,58,138,0.25);
+  font-weight: 600;
 }
 .nav-icon { font-size: 1.1rem; flex-shrink: 0; }
 
@@ -176,14 +176,14 @@
 .admin-topbar-right { display: flex; align-items: center; gap: 1.25rem; }
 
 .admin-view-site {
-  font-size: 0.8rem; color: #60A5FA;
+  font-size: 0.8rem; color: var(--adm-primary);
   text-decoration: none; font-weight: 600;
   padding: 0.4rem 0.875rem;
-  border: 1px solid rgba(29,78,216,0.4);
+  border: 1px solid rgba(30,58,138,0.3);
   border-radius: 8px; transition: all 0.2s ease;
-  background: rgba(29,78,216,0.08);
+  background: rgba(30,58,138,0.06);
 }
-.admin-view-site:hover { background: rgba(29,78,216,0.18); border-color: #60A5FA; }
+.admin-view-site:hover { background: rgba(30,58,138,0.12); border-color: var(--adm-primary); }
 
 .admin-user { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; font-weight: 600; color: var(--adm-text); }
 .admin-avatar { font-size: 1.4rem; }
@@ -216,7 +216,7 @@
   flex-wrap: wrap; gap: 0.75rem;
 }
 .admin-card-header h3 { font-size: 0.95rem; font-weight: 700; color: var(--adm-text); }
-.admin-link { font-size: 0.8rem; color: #60A5FA; text-decoration: none; font-weight: 600; }
+.admin-link { font-size: 0.8rem; color: var(--adm-primary); text-decoration: none; font-weight: 600; }
 .admin-link:hover { text-decoration: underline; }
 
 .admin-search {
@@ -393,7 +393,7 @@
   border-radius: 16px; padding: 1.5rem;
   display: flex; align-items: center; justify-content: space-between;
   transition: all 0.2s ease;
-  background-image: linear-gradient(135deg, #F0F0F6 0%, #E8E8F0 100%);
+  background-image: linear-gradient(135deg, #F0F0F6 0%, #EAEAF0 100%);
 }
 .admin-stat-card:hover { border-color: var(--adm-border2); transform: translateY(-2px); box-shadow: 0 8px 25px rgba(26,26,46,0.12); }
 .asc-label { font-size: 0.7rem; color: var(--adm-text2); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; margin-bottom: 0.5rem; }
@@ -488,7 +488,7 @@
 .msg-meta span { font-size: 0.72rem; color: var(--adm-text3); }
 .msg-subject { font-size: 0.75rem; font-weight: 600; color: var(--adm-text2); margin-bottom: 0.2rem; }
 .msg-snippet { font-size: 0.72rem; color: var(--adm-text3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.unread-dot { width: 8px; height: 8px; border-radius: 50%; background: #60A5FA; position: absolute; top: 1rem; right: 1rem; }
+.unread-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--adm-primary); position: absolute; top: 1rem; right: 1rem; }
 .unread-badge { background: var(--adm-primary); color: #fff; font-size: 0.7rem; padding: 0.15rem 0.5rem; border-radius: 100px; margin-left: 0.5rem; }
 
 .message-body { padding: 1.25rem 0; border-bottom: 1px solid var(--adm-border); margin-bottom: 1.25rem; }
