@@ -103,18 +103,18 @@
   .mobile-menu-wrap { display: block; }
 }
 
-/* 3-dot trigger button */
+/* 3-line trigger button */
 .dots-btn {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 5px;
   width: 40px;
   height: 40px;
-  border-radius: 50%;
+  border-radius: 8px;
   background: none;
-  border: 1.5px solid var(--border);
+  border: none;
   cursor: pointer;
   transition: all 0.2s ease;
   flex-shrink: 0;
@@ -123,17 +123,19 @@
 .dots-btn:hover,
 .dots-btn.open {
   background: rgba(30,58,138,0.08);
-  border-color: var(--primary);
 }
 
 .dots-btn span {
   display: block;
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
+  height: 2px;
+  border-radius: 2px;
   background: var(--text-primary);
   transition: background 0.2s ease;
 }
+
+.dots-btn span:nth-child(1) { width: 22px; }
+.dots-btn span:nth-child(2) { width: 16px; }
+.dots-btn span:nth-child(3) { width: 22px; }
 
 .dots-btn.open span { background: var(--primary); }
 
