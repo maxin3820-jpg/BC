@@ -51,7 +51,8 @@ const AdminStudents = () => {
           </div>
         </div>
 
-        <div className="admin-table">
+        {/* Desktop table */}
+        <div className="admin-table students-desktop-table">
           <div className="admin-table-head">
             <span>Student</span>
             <span>Email</span>
@@ -80,6 +81,45 @@ const AdminStudents = () => {
               </span>
             </div>
           ))}
+        </div>
+
+        {/* Mobile cards */}
+        <div className="students-mobile-cards">
+          {filtered.map(student => (
+            <div key={student.id} className="student-mobile-card">
+              <div className="smc-header">
+                <div className="smc-identity">
+                  <span className="student-avatar smc-avatar">{student.avatar}</span>
+                  <div>
+                    <div className="smc-name">{student.name}</div>
+                    <div className="smc-email">{student.email}</div>
+                  </div>
+                </div>
+                <span className={`status-badge ${student.status === 'Active' ? 'active' : 'inactive'}`}>
+                  {student.status}
+                </span>
+              </div>
+              <div className="smc-meta">
+                <div className="smc-meta-item">
+                  <span className="smc-meta-label">Courses</span>
+                  <span className="smc-meta-value">{student.enrolled}</span>
+                </div>
+                <div className="smc-meta-item">
+                  <span className="smc-meta-label">Joined</span>
+                  <span className="smc-meta-value">{student.joined}</span>
+                </div>
+              </div>
+              <div className="smc-actions">
+                <button className="admin-btn-icon edit">👁 View</button>
+                <button className="admin-btn-icon delete">🚫 Block</button>
+              </div>
+            </div>
+          ))}
+          {filtered.length === 0 && (
+            <p style={{ textAlign: 'center', color: 'var(--adm-text3)', padding: '2rem', fontSize: '0.875rem' }}>
+              No students found.
+            </p>
+          )}
         </div>
       </div>
     </div>

@@ -161,7 +161,8 @@ const AdminCourses = () => {
           <span className="admin-count">{filtered.length} courses</span>
         </div>
 
-        <div className="admin-table">
+        {/* Desktop table */}
+        <div className="admin-table courses-desktop-table">
           <div className="admin-table-head">
             <span>Course</span>
             <span>Price</span>
@@ -196,6 +197,64 @@ const AdminCourses = () => {
               </span>
             </div>
           ))}
+        </div>
+
+        {/* Mobile cards */}
+        <div className="courses-mobile-cards">
+          {filtered.map(course => (
+            <div key={course.id} className="course-mobile-card">
+              {/* Thumbnail + title row */}
+              <div className="cmc-header">
+                <div className="cmc-thumb">
+                  {course.thumbnail && (course.thumbnail.startsWith('http') || course.thumbnail.startsWith('data:')) ? (
+                    <img src={course.thumbnail} alt={course.title} />
+                  ) : (
+                    <div className="cmc-thumb-bg" style={{ background: course.thumbnail || 'linear-gradient(135deg, #1E3A8A, #1D4ED8)' }} />
+                  )}
+                </div>
+                <div className="cmc-info">
+                  <div className="cmc-badges">
+                    {course.isBestseller && <span className="mini-badge bestseller">⭐ Best</span>}
+                    {course.isNew && <span className="mini-badge new-badge">New</span>}
+                    {course.isFree && <span className="mini-badge free-badge">Free</span>}
+                    {course.currency && <span className="mini-badge" style={{ background: 'rgba(29,78,216,0.2)', color: '#60A5FA' }}>{course.currency}</span>}
+                  </div>
+                  <div className="cmc-title">{course.title}</div>
+                </div>
+              </div>
+              {/* Meta row */}
+              <div className="cmc-meta">
+                <div className="cmc-meta-item">
+                  <span className="cmc-meta-label">Price</span>
+                  <span className="cmc-meta-value">{course.isFree ? 'Free' : `PKR ${course.price}`}</span>
+                </div>
+                <div className="cmc-meta-item">
+                  <span className="cmc-meta-label">Status</span>
+                  <span className="cmc-meta-value" style={{ color: 'var(--adm-accent)' }}>● Active</span>
+                </div>
+                {course.originalPrice && !course.isFree && (
+                  <div className="cmc-meta-item">
+                    <span className="cmc-meta-label">Original</span>
+                    <span className="cmc-meta-value" style={{ textDecoration: 'line-through', color: 'var(--adm-text3)' }}>PKR {course.originalPrice}</span>
+                  </div>
+                )}
+              </div>
+              {/* Actions */}
+              <div className="cmc-actions">
+                <button className="cmc-btn cmc-btn-edit" onClick={() => openEdit(course)}>
+                  ✏️ Edit
+                </button>
+                <button className="cmc-btn cmc-btn-delete" onClick={() => setDeleteConfirm(course.id)}>
+                  🗑 Delete
+                </button>
+              </div>
+            </div>
+          ))}
+          {filtered.length === 0 && (
+            <p style={{ textAlign: 'center', color: 'var(--adm-text3)', padding: '2rem', fontSize: '0.875rem' }}>
+              No courses found.
+            </p>
+          )}
         </div>
       </div>
 
