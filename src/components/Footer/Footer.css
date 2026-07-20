@@ -7,7 +7,7 @@
 
 .footer-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
+  grid-template-columns: 2fr 1fr 1fr;
   gap: 3rem;
   margin-bottom: 3rem;
 }
@@ -128,10 +128,10 @@
 /* ===== 1024px — LARGE TABLET ===== */
 @media (max-width: 1024px) {
   .footer-grid {
-    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 2rem;
   }
-  /* hide 4th col or fold it — keep 3 cols */
+  .footer-brand { grid-column: span 2; }
 }
 
 /* ===== 900px ===== */

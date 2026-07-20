@@ -47,25 +47,6 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Support */}
-          <div className="footer-col">
-            <h4>Support</h4>
-            <ul>
-              <li>
-                <a href={WHATSAPP} target="_blank" rel="noopener noreferrer">
-                  Help via WhatsApp
-                </a>
-              </li>
-              <li><Link to="/contact">Send a Message</Link></li>
-              <li>
-                <a href="mailto:maxin3820@gmail.com">
-                  Email Us
-                </a>
-              </li>
-              <li><Link to="/courses">Browse Courses</Link></li>
-            </ul>
-          </div>
-
         </div>
 
         <div className="footer-bottom">
