@@ -15,7 +15,6 @@ const Footer = () => {
           {/* Brand */}
           <div className="footer-brand">
             <Link to="/" className="footer-logo">
-              <div className="logo-icon">B</div>
               <span>Birsil <strong>Courses</strong></span>
             </Link>
             <p>Learn new skills and grab premium digital products. Grow your career with Birsil.</p>

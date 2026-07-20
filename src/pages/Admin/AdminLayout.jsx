@@ -44,8 +44,7 @@ const AdminLayout = ({ onLogout }) => {
         <aside className="admin-sidebar">
           <div className="admin-sidebar-header">
             <div className="admin-logo">
-              <div className="logo-icon">B</div>
-              {!isCollapsed && <span>Birsil <strong>Admin</strong></span>}
+                            {!isCollapsed && <span>Birsil <strong>Admin</strong></span>}
             </div>
             <button className="collapse-btn" onClick={() => setCollapsed(!collapsed)} aria-label="Toggle sidebar">
               {collapsed ? '→' : '←'}
@@ -93,8 +92,7 @@ const AdminLayout = ({ onLogout }) => {
             <div className="mobile-nav-card">
               <div className="mobile-nav-card-header">
                 <div className="admin-logo">
-                  <div className="logo-icon">B</div>
-                  <span>Birsil <strong>Admin</strong></span>
+                                    <span>Birsil <strong>Admin</strong></span>
                 </div>
               </div>
               <div className="mobile-nav-grid">
