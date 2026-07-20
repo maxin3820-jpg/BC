@@ -21,24 +21,24 @@
 
 .footer-logo {
   display: flex;
-  align-items: center;
+  align-items: baseline;
+  gap: 0.2rem;
   text-decoration: none;
+  letter-spacing: -0.01em;
+}
+
+.footer-logo .logo-birsil {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0F172A;
+  letter-spacing: -0.03em;
+}
+
+.footer-logo .logo-courses {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1D4ED8;
   letter-spacing: -0.02em;
-}
-
-.footer-logo span {
-  font-size: 1.25rem;
-  font-weight: 400;
-  color: var(--text-primary);
-}
-
-.footer-logo strong {
-  font-weight: 900;
-  font-size: 1.25rem;
-  background: var(--grad-primary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 .footer-brand p {

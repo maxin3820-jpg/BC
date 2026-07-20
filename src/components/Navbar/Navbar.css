@@ -26,27 +26,27 @@
 /* ===== LOGO ===== */
 .navbar-logo {
   display: flex;
-  align-items: center;
+  align-items: baseline;
+  gap: 0.2rem;
   text-decoration: none;
   flex-shrink: 0;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.01em;
 }
 
-.navbar-logo span {
-  font-size: 1.35rem;
-  font-weight: 400;
-  color: var(--text-primary);
+.navbar-logo .logo-birsil {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #0F172A;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.navbar-logo .logo-courses {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1D4ED8;
   letter-spacing: -0.02em;
-}
-
-.navbar-logo strong {
-  font-weight: 900;
-  font-size: 1.35rem;
-  background: var(--grad-primary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  letter-spacing: -0.03em;
+  line-height: 1;
 }
 
 /* ===== DESKTOP NAV ===== */
@@ -233,6 +233,7 @@
 
 /* ===== 360px ===== */
 @media (max-width: 360px) {
-  .navbar-logo span, .navbar-logo strong { font-size: 1.1rem; }
+  .navbar-logo .logo-birsil,
+  .navbar-logo .logo-courses { font-size: 1.1rem; }
   .mobile-dropdown { width: 185px; right: -0.5rem; }
 }

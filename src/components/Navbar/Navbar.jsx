@@ -39,7 +39,8 @@ const Navbar = () => {
 
         {/* Logo */}
         <Link to="/" className="navbar-logo">
-          <span>Birsil <strong>Courses</strong></span>
+          <span className="logo-birsil">Birsil</span>
+          <span className="logo-courses">Courses</span>
         </Link>
 
         {/* Desktop Nav Links */}
