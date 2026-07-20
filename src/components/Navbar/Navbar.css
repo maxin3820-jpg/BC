@@ -27,30 +27,26 @@
 .navbar-logo {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
   text-decoration: none;
-  color: var(--text-primary);
-  font-size: 1.15rem;
-  font-weight: 500;
   flex-shrink: 0;
+  letter-spacing: -0.03em;
+}
+
+.navbar-logo span {
+  font-size: 1.35rem;
+  font-weight: 400;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
 }
 
 .navbar-logo strong {
-  font-weight: 800;
+  font-weight: 900;
+  font-size: 1.35rem;
   background: var(--grad-primary);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-}
-
-.logo-icon {
-  width: 36px; height: 36px;
-  border-radius: 9px;
-  background: var(--grad-primary);
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 900; font-size: 1.1rem; color: #F0F0F6;
-  flex-shrink: 0;
-  box-shadow: 0 3px 10px rgba(30,58,138,0.3);
+  letter-spacing: -0.03em;
 }
 
 /* ===== DESKTOP NAV ===== */
@@ -237,6 +233,6 @@
 
 /* ===== 360px ===== */
 @media (max-width: 360px) {
-  .navbar-logo > span { display: none; }
+  .navbar-logo span, .navbar-logo strong { font-size: 1.1rem; }
   .mobile-dropdown { width: 185px; right: -0.5rem; }
 }

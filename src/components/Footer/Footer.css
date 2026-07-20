@@ -22,15 +22,19 @@
 .footer-logo {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
   text-decoration: none;
+  letter-spacing: -0.02em;
+}
+
+.footer-logo span {
+  font-size: 1.25rem;
+  font-weight: 400;
   color: var(--text-primary);
-  font-size: 1.15rem;
-  font-weight: 500;
 }
 
 .footer-logo strong {
-  font-weight: 800;
+  font-weight: 900;
+  font-size: 1.25rem;
   background: var(--grad-primary);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
