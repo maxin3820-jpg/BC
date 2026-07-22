@@ -5,6 +5,7 @@ import './Admin.css'
 const navItems = [
   { to: '/admin/dashboard', icon: '📊', label: 'Dashboard' },
   { to: '/admin/courses', icon: '📚', label: 'Courses' },
+  { to: '/admin/packs', icon: '📦', label: 'Packs' },
   { to: '/admin/students', icon: '👥', label: 'Students' },
   { to: '/admin/messages', icon: '💬', label: 'Messages' },
   { to: '/admin/analytics', icon: '📈', label: 'Analytics' },

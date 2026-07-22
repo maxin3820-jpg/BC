@@ -12,6 +12,7 @@ import AdminLogin from './pages/Admin/AdminLogin'
 import AdminLayout from './pages/Admin/AdminLayout'
 import Dashboard from './pages/Admin/Dashboard'
 import AdminCourses from './pages/Admin/AdminCourses'
+import AdminPacks from './pages/Admin/AdminPacks'
 import AdminStudents from './pages/Admin/AdminStudents'
 import AdminMessages from './pages/Admin/AdminMessages'
 import AdminAnalytics from './pages/Admin/AdminAnalytics'
@@ -42,6 +43,7 @@ function App() {
             <Route index element={<Dashboard />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="courses" element={<AdminCourses />} />
+            <Route path="packs" element={<AdminPacks />} />
             <Route path="students" element={<AdminStudents />} />
             <Route path="messages" element={<AdminMessages />} />
             <Route path="analytics" element={<AdminAnalytics />} />
