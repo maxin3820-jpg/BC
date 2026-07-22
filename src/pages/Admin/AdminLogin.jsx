@@ -1,9 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { supabase } from '../../lib/supabase'
 import './Admin.css'
-
-const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL
-const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD
 
 const AdminLogin = ({ onLogin }) => {
   const [form, setForm] = useState({ email: '', password: '' })
@@ -11,20 +9,36 @@ const AdminLogin = ({ onLogin }) => {
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
     setError('')
-    setTimeout(() => {
-      if (form.email === ADMIN_EMAIL && form.password === ADMIN_PASSWORD) {
-        localStorage.setItem('birsil_admin', 'true')
-        onLogin()
-        navigate('/admin/dashboard')
-      } else {
-        setError('Invalid email or password.')
-      }
+
+    // Check if Supabase is configured
+    if (!supabase) {
+      setError('Supabase is not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.')
       setLoading(false)
-    }, 800)
+      return
+    }
+
+    try {
+      // Authenticate with Supabase Auth
+      const { data, error: authError } = await supabase.auth.signInWithPassword({
+        email: form.email,
+        password: form.password,
+      })
+
+      if (authError) throw authError
+
+      // Store session indicator
+      localStorage.setItem('birsil_admin', 'true')
+      onLogin()
+      navigate('/admin/dashboard', { replace: true })
+    } catch (err) {
+      console.error('Login error:', err)
+      setError('Invalid email or password.')
+      setLoading(false)
+    }
   }
 
   return (

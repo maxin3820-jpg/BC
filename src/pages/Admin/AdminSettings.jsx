@@ -74,13 +74,36 @@ const AdminSettings = () => {
     showToast('✅ Social links saved!')
   }
 
-  const savePassword = (e) => {
+  const savePassword = async (e) => {
     e.preventDefault()
-    if (password.newPass !== password.confirm) { showToast('❌ Passwords do not match!'); return }
-    const currentAdminPass = import.meta.env.VITE_ADMIN_PASSWORD
-    if (!currentAdminPass || password.current !== currentAdminPass) { showToast('❌ Current password is incorrect!'); return }
-    showToast('✅ Password noted — update VITE_ADMIN_PASSWORD in your Netlify env vars to persist.')
-    setPassword({ current: '', newPass: '', confirm: '' })
+    if (password.newPass !== password.confirm) { 
+      showToast('❌ Passwords do not match!'); 
+      return 
+    }
+    
+    if (password.newPass.length < 8) {
+      showToast('❌ Password must be at least 8 characters!')
+      return
+    }
+
+    if (!supabase) {
+      showToast('❌ Supabase not configured')
+      return
+    }
+
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: password.newPass
+      })
+
+      if (error) throw error
+
+      showToast('✅ Password updated successfully!')
+      setPassword({ current: '', newPass: '', confirm: '' })
+    } catch (err) {
+      console.error('Password update error:', err)
+      showToast('❌ Failed to update password: ' + err.message)
+    }
   }
 
   if (loadingSettings) return <div style={{ padding: '2rem', color: 'var(--adm-text2)' }}>Loading settings...</div>
@@ -144,16 +167,12 @@ const AdminSettings = () => {
           <div className="admin-card-header"><h3>🔒 Change Password</h3></div>
           <form onSubmit={savePassword}>
             <div className="admin-form-group">
-              <label>Current Password</label>
-              <input type="password" value={password.current} onChange={e => setPassword(p => ({ ...p, current: e.target.value }))} placeholder="••••••••" />
-            </div>
-            <div className="admin-form-group">
               <label>New Password</label>
-              <input type="password" value={password.newPass} onChange={e => setPassword(p => ({ ...p, newPass: e.target.value }))} placeholder="••••••••" />
+              <input type="password" value={password.newPass} onChange={e => setPassword(p => ({ ...p, newPass: e.target.value }))} placeholder="••••••••" required />
             </div>
             <div className="admin-form-group">
               <label>Confirm New Password</label>
-              <input type="password" value={password.confirm} onChange={e => setPassword(p => ({ ...p, confirm: e.target.value }))} placeholder="••••••••" />
+              <input type="password" value={password.confirm} onChange={e => setPassword(p => ({ ...p, confirm: e.target.value }))} placeholder="••••••••" required />
             </div>
             <button type="submit" className="admin-btn-primary">Update Password</button>
           </form>

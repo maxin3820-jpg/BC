@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom'
+import { supabase } from '../../lib/supabase'
 import './Admin.css'
 
 const navItems = [
@@ -29,7 +30,16 @@ const AdminLayout = ({ onLogout }) => {
     return () => window.removeEventListener('resize', onResize)
   }, [])
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    // Clear Supabase session if available
+    if (supabase) {
+      try {
+        await supabase.auth.signOut()
+      } catch (err) {
+        console.error('Logout error:', err)
+      }
+    }
+    
     localStorage.removeItem('birsil_admin')
     onLogout()
     navigate('/')

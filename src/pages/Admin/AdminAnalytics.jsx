@@ -1,5 +1,7 @@
-import React from 'react'
-import { courses } from '../../data/courses'
+import React, { useState, useEffect } from 'react'
+import { supabase } from '../../lib/supabase'
+import { courses as localCourses } from '../../data/courses'
+import { mapCourse } from '../../hooks/useCourses'
 
 const monthlyViews = [
   { month: 'Jan', views: 820 },
@@ -14,10 +16,27 @@ const monthlyViews = [
 const maxViews = Math.max(...monthlyViews.map(d => d.views))
 
 const AdminAnalytics = () => {
+  const [courses, setCourses] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const load = async () => {
+      if (!supabase) { setCourses(localCourses); setLoading(false); return }
+      try {
+        const { data, error } = await supabase
+          .from('courses')
+          .select('*')
+          .order('sort_order', { ascending: true })
+        setCourses(!error && data?.length ? data.map(mapCourse) : localCourses)
+      } catch { setCourses(localCourses) }
+      finally { setLoading(false) }
+    }
+    load()
+  }, [])
+
   const paidCourses = courses.filter(c => !c.isFree)
   const freeCourses = courses.filter(c => c.isFree)
   const bestsellers = courses.filter(c => c.isBestseller)
-  const newCourses = courses.filter(c => c.isNew)
 
   return (
     <div className="admin-analytics">
@@ -33,7 +52,7 @@ const AdminAnalytics = () => {
         <div className="admin-stat-card">
           <div className="asc-left">
             <p className="asc-label">Total Courses</p>
-            <h3 className="asc-value">{courses.length}</h3>
+            <h3 className="asc-value">{loading ? '…' : courses.length}</h3>
             <span className="asc-change">On platform</span>
           </div>
           <div className="asc-icon" style={{ background: '#1E3A8A20', color: '#1E3A8A' }}>📚</div>
@@ -41,7 +60,7 @@ const AdminAnalytics = () => {
         <div className="admin-stat-card">
           <div className="asc-left">
             <p className="asc-label">Paid Courses</p>
-            <h3 className="asc-value">{paidCourses.length}</h3>
+            <h3 className="asc-value">{loading ? '…' : paidCourses.length}</h3>
             <span className="asc-change">Available for purchase</span>
           </div>
           <div className="asc-icon" style={{ background: '#2DC49A20', color: '#2DC49A' }}>💰</div>
@@ -49,7 +68,7 @@ const AdminAnalytics = () => {
         <div className="admin-stat-card">
           <div className="asc-left">
             <p className="asc-label">Bestsellers</p>
-            <h3 className="asc-value">{bestsellers.length}</h3>
+            <h3 className="asc-value">{loading ? '…' : bestsellers.length}</h3>
             <span className="asc-change">Top courses</span>
           </div>
           <div className="asc-icon" style={{ background: '#C88A0020', color: '#C88A00' }}>⭐</div>
@@ -57,7 +76,7 @@ const AdminAnalytics = () => {
         <div className="admin-stat-card">
           <div className="asc-left">
             <p className="asc-label">Free Courses</p>
-            <h3 className="asc-value">{freeCourses.length}</h3>
+            <h3 className="asc-value">{loading ? '…' : freeCourses.length}</h3>
             <span className="asc-change">No cost to enroll</span>
           </div>
           <div className="asc-icon" style={{ background: '#1D4ED820', color: '#1D4ED8' }}>🎁</div>
@@ -90,20 +109,21 @@ const AdminAnalytics = () => {
       {/* Course Breakdown */}
       <div className="admin-card">
         <div className="admin-card-header"><h3>Course Breakdown</h3></div>
-        <div className="category-breakdown">
-          {courses.map((course, i) => {
-            const pct = Math.round(((i + 1) / courses.length) * 100)
-            return (
+        {loading ? (
+          <p style={{ padding: '1rem', color: 'var(--adm-text3)', fontSize: '0.875rem' }}>Loading...</p>
+        ) : (
+          <div className="category-breakdown">
+            {courses.map((course, i) => (
               <div key={course.id} className="cb-row">
                 <span className="cb-name">{course.title}</span>
                 <div className="cb-bar-wrap">
-                  <div className="cb-bar" style={{ width: `${100 - i * 12}%` }}></div>
+                  <div className="cb-bar" style={{ width: `${Math.max(10, 100 - i * 12)}%` }} />
                 </div>
-                <span className="cb-pct">{course.isFree ? 'Free' : `$${course.price}`}</span>
+                <span className="cb-pct">{course.isFree ? 'Free' : `PKR ${course.price}`}</span>
               </div>
-            )
-          })}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   )
