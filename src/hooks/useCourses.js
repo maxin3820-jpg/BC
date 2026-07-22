@@ -3,18 +3,19 @@ import { supabase } from '../lib/supabase'
 import { courses as localCourses } from '../data/courses'
 
 export const useCourses = () => {
-  const [courses, setCourses] = useState(localCourses)
-  const [loading, setLoading] = useState(false)
+  const [courses, setCourses] = useState([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // No Supabase configured — use local data instantly
     if (!supabase) {
+      setCourses(localCourses)
       setLoading(false)
       return
     }
 
-    setLoading(true)
+    // Initial fetch
     const fetchCourses = async () => {
+      setLoading(true)
       try {
         const { data, error } = await supabase
           .from('courses')
@@ -25,18 +26,7 @@ export const useCourses = () => {
         if (error || !data || data.length === 0) {
           setCourses(localCourses)
         } else {
-          setCourses(data.map(c => ({
-            id: c.id,
-            title: c.title,
-            description: c.description,
-            price: c.price,
-            originalPrice: c.original_price,
-            currency: c.currency,
-            thumbnail: c.thumbnail,
-            isBestseller: c.is_bestseller,
-            isNew: c.is_new,
-            isFree: c.is_free,
-          })))
+          setCourses(data.map(mapCourse))
         }
       } catch {
         setCourses(localCourses)
@@ -46,7 +36,28 @@ export const useCourses = () => {
     }
 
     fetchCourses()
+
+    // Realtime subscription — any change in courses table re-fetches
+    const channel = supabase
+      .channel('courses-public')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'courses' }, fetchCourses)
+      .subscribe()
+
+    return () => supabase.removeChannel(channel)
   }, [])
 
   return { courses, loading }
 }
+
+export const mapCourse = (c) => ({
+  id: c.id,
+  title: c.title,
+  description: c.description,
+  price: c.price,
+  originalPrice: c.original_price,
+  currency: c.currency || 'PKR',
+  thumbnail: c.thumbnail,
+  isBestseller: c.is_bestseller,
+  isNew: c.is_new,
+  isFree: c.is_free,
+})

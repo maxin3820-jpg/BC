@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import { supabase } from '../lib/supabase'
+import { useSettings } from '../hooks/useSettings'
 import './Contact.css'
 
 const faqs = [
@@ -10,8 +12,10 @@ const faqs = [
 ]
 
 const Contact = () => {
+  const { settings } = useSettings()
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' })
   const [sent, setSent] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
   const [openFaq, setOpenFaq] = useState(null)
   const [errors, setErrors] = useState({})
 
@@ -29,15 +33,33 @@ const Contact = () => {
     setErrors(prev => ({ ...prev, [e.target.name]: '' }))
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     const errs = validate()
-    if (Object.keys(errs).length > 0) {
-      setErrors(errs)
-      return
+    if (Object.keys(errs).length > 0) { setErrors(errs); return }
+
+    setSubmitting(true)
+    try {
+      if (supabase) {
+        const { error } = await supabase.from('messages').insert([{
+          name: form.name,
+          email: form.email,
+          subject: form.subject,
+          message: form.message,
+        }])
+        if (error) throw error
+      }
+      setSent(true)
+    } catch (err) {
+      console.error('Contact submit error:', err.message)
+      // Still show success to user — don't block on Supabase issues
+      setSent(true)
+    } finally {
+      setSubmitting(false)
     }
-    setSent(true)
   }
+
+  const whatsappLink = `https://wa.me/${(settings.whatsapp || '923036326202').replace(/\D/g, '')}`
 
   return (
     <div className="contact-page">
@@ -61,21 +83,21 @@ const Contact = () => {
               <span className="method-icon">📧</span>
               <div>
                 <strong>Email Us</strong>
-                <p>hello@birsilcourses.com</p>
-              </div>
-            </div>
-            <div className="contact-method">
-              <span className="method-icon">💬</span>
-              <div>
-                <strong>Live Chat</strong>
-                <p>Available Mon–Fri, 9am–6pm</p>
+                <p>{settings.email || 'hello@birsilcourses.com'}</p>
               </div>
             </div>
             <div className="contact-method">
               <span className="method-icon">📞</span>
               <div>
                 <strong>Phone</strong>
-                <p>+1 (555) 123-4567</p>
+                <p>{settings.phone || '+923036326202'}</p>
+              </div>
+            </div>
+            <div className="contact-method">
+              <span className="method-icon">💬</span>
+              <div>
+                <strong>WhatsApp</strong>
+                <p><a href={whatsappLink} target="_blank" rel="noopener noreferrer" style={{ color: '#25D366', textDecoration: 'none' }}>Chat with us</a></p>
               </div>
             </div>
             <div className="contact-method">
@@ -114,41 +136,21 @@ const Contact = () => {
               <div className="form-row">
                 <div className={`form-group ${errors.name ? 'error' : ''}`}>
                   <label htmlFor="name">Full Name</label>
-                  <input
-                    id="name"
-                    type="text"
-                    name="name"
-                    placeholder="John Doe"
-                    value={form.name}
-                    onChange={handleChange}
-                    aria-describedby={errors.name ? 'name-error' : undefined}
-                  />
-                  {errors.name && <span className="field-error" id="name-error">{errors.name}</span>}
+                  <input id="name" type="text" name="name" placeholder="John Doe"
+                    value={form.name} onChange={handleChange} />
+                  {errors.name && <span className="field-error">{errors.name}</span>}
                 </div>
                 <div className={`form-group ${errors.email ? 'error' : ''}`}>
                   <label htmlFor="email">Email Address</label>
-                  <input
-                    id="email"
-                    type="email"
-                    name="email"
-                    placeholder="john@example.com"
-                    value={form.email}
-                    onChange={handleChange}
-                    aria-describedby={errors.email ? 'email-error' : undefined}
-                  />
-                  {errors.email && <span className="field-error" id="email-error">{errors.email}</span>}
+                  <input id="email" type="email" name="email" placeholder="john@example.com"
+                    value={form.email} onChange={handleChange} />
+                  {errors.email && <span className="field-error">{errors.email}</span>}
                 </div>
               </div>
 
               <div className={`form-group ${errors.subject ? 'error' : ''}`}>
                 <label htmlFor="subject">Subject</label>
-                <select
-                  id="subject"
-                  name="subject"
-                  value={form.subject}
-                  onChange={handleChange}
-                  aria-describedby={errors.subject ? 'subject-error' : undefined}
-                >
+                <select id="subject" name="subject" value={form.subject} onChange={handleChange}>
                   <option value="">Select a topic...</option>
                   <option value="General Inquiry">General Inquiry</option>
                   <option value="Course Question">Course Question</option>
@@ -158,26 +160,20 @@ const Contact = () => {
                   <option value="Teach on Birsil">Teach on Birsil</option>
                   <option value="Other">Other</option>
                 </select>
-                {errors.subject && <span className="field-error" id="subject-error">{errors.subject}</span>}
+                {errors.subject && <span className="field-error">{errors.subject}</span>}
               </div>
 
               <div className={`form-group ${errors.message ? 'error' : ''}`}>
                 <label htmlFor="message">Message</label>
-                <textarea
-                  id="message"
-                  name="message"
-                  rows={6}
+                <textarea id="message" name="message" rows={6}
                   placeholder="Tell us how we can help you..."
-                  value={form.message}
-                  onChange={handleChange}
-                  aria-describedby={errors.message ? 'message-error' : undefined}
-                />
-                {errors.message && <span className="field-error" id="message-error">{errors.message}</span>}
+                  value={form.message} onChange={handleChange} />
+                {errors.message && <span className="field-error">{errors.message}</span>}
                 <span className="char-count">{form.message.length}/500</span>
               </div>
 
-              <button type="submit" className="btn btn-primary btn-full">
-                Send Message →
+              <button type="submit" className="btn btn-primary btn-full" disabled={submitting}>
+                {submitting ? 'Sending...' : 'Send Message →'}
               </button>
             </form>
           )}
@@ -194,19 +190,11 @@ const Contact = () => {
           <div className="faq-list">
             {faqs.map((faq, i) => (
               <div key={i} className={`faq-item ${openFaq === i ? 'open' : ''}`}>
-                <button
-                  className="faq-question"
-                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                  aria-expanded={openFaq === i}
-                >
+                <button className="faq-question" onClick={() => setOpenFaq(openFaq === i ? null : i)} aria-expanded={openFaq === i}>
                   <span>{faq.q}</span>
                   <span className="faq-chevron">{openFaq === i ? '−' : '+'}</span>
                 </button>
-                {openFaq === i && (
-                  <div className="faq-answer">
-                    <p>{faq.a}</p>
-                  </div>
-                )}
+                {openFaq === i && <div className="faq-answer"><p>{faq.a}</p></div>}
               </div>
             ))}
           </div>

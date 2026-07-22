@@ -480,8 +480,16 @@
 .message-item:hover { background: var(--adm-hover); }
 .message-item.selected { background: rgba(29,78,216,0.1); border-left: 3px solid var(--adm-primary); }
 .message-item.unread .msg-preview strong { color: #60A5FA; }
-.msg-avatar { font-size: 1.75rem; flex-shrink: 0; }
-.msg-avatar.lg { font-size: 2.5rem; }
+.msg-avatar {
+  font-size: 1rem; flex-shrink: 0;
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: var(--adm-grad);
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700;
+}
+.msg-avatar.lg { font-size: 1.25rem; width: 48px; height: 48px; }
 .msg-preview { flex: 1; overflow: hidden; }
 .msg-meta { display: flex; justify-content: space-between; margin-bottom: 0.2rem; }
 .msg-meta strong { font-size: 0.875rem; color: var(--adm-text); }

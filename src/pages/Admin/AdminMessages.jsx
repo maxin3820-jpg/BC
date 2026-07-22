@@ -1,22 +1,46 @@
 import React, { useState, useEffect } from 'react'
-
-const initialMessages = [
-  { id: 1, name: 'Mohamed Adel', email: 'mohamed@example.com', subject: 'Course Question', message: 'Hi, I wanted to ask about the web development bootcamp. Does it cover TypeScript?', time: '2 hours ago', read: false, avatar: '👨‍💻' },
-  { id: 2, name: 'Sara Khalil', email: 'sara@example.com', subject: 'Billing', message: "I was charged twice for the React course. Can you help me resolve this?", time: '5 hours ago', read: false, avatar: '👩‍💼' },
-  { id: 3, name: 'Yusuf Okafor', email: 'yusuf@example.com', subject: 'Partnership', message: "I'm an instructor with 5 years of experience in data science. I'd love to create a course on your platform.", time: '1 day ago', read: true, avatar: '👨‍🔬' },
-  { id: 4, name: 'Lina Hassan', email: 'lina@example.com', subject: 'Technical Support', message: 'Videos are not loading on my mobile device. I have tried reinstalling the browser but the issue persists.', time: '2 days ago', read: true, avatar: '👩‍🎓' },
-  { id: 5, name: 'Tariq Al-Amin', email: 'tariq@example.com', subject: 'General Inquiry', message: 'Do you offer team or corporate plans for multiple employees?', time: '3 days ago', read: true, avatar: '👨‍🏫' },
-]
+import { supabase } from '../../lib/supabase'
 
 const getIsMobile = () => typeof window !== 'undefined' && window.innerWidth <= 768
 
 const AdminMessages = () => {
-  const [messages, setMessages] = useState(initialMessages)
+  const [messages, setMessages] = useState([])
+  const [loading, setLoading] = useState(true)
   const [selected, setSelected] = useState(null)
   const [reply, setReply] = useState('')
   const [filter, setFilter] = useState('All')
   const [isMobile, setIsMobile] = useState(getIsMobile)
   const [showDetail, setShowDetail] = useState(false)
+  const [toast, setToast] = useState('')
+
+  const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(''), 3000) }
+
+  // ── Load from Supabase ────────────────────────────────────────────────────
+  useEffect(() => {
+    const load = async () => {
+      if (!supabase) { setLoading(false); return }
+      try {
+        const { data, error } = await supabase
+          .from('messages')
+          .select('*')
+          .order('created_at', { ascending: false })
+        if (!error && data) setMessages(data)
+      } catch { /* show empty */ }
+      finally { setLoading(false) }
+    }
+    load()
+
+    // Realtime — new messages appear instantly
+    if (!supabase) return
+    const channel = supabase
+      .channel('messages-admin')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, payload => {
+        setMessages(prev => [payload.new, ...prev])
+      })
+      .subscribe()
+
+    return () => supabase.removeChannel(channel)
+  }, [])
 
   useEffect(() => {
     const onResize = () => setIsMobile(window.innerWidth <= 768)
@@ -25,134 +49,154 @@ const AdminMessages = () => {
   }, [])
 
   const filtered = messages.filter(m => {
-    if (filter === 'Unread') return !m.read
-    if (filter === 'Read') return m.read
+    if (filter === 'Unread') return !m.is_read
+    if (filter === 'Read') return m.is_read
     return true
   })
 
-  const openMessage = (msg) => {
+  const openMessage = async (msg) => {
     setSelected(msg)
-    setMessages(prev => prev.map(m => m.id === msg.id ? { ...m, read: true } : m))
-    if (isMobile) setShowDetail(true)
-  }
-
-  const sendReply = () => {
-    if (!reply.trim()) return
     setReply('')
-    alert(`Reply sent to ${selected.email}!`)
-  }
-
-  const deleteMessage = (id) => {
-    setMessages(prev => prev.filter(m => m.id !== id))
-    if (selected?.id === id) {
-      setSelected(null)
-      setShowDetail(false)
+    if (isMobile) setShowDetail(true)
+    // Mark as read
+    if (!msg.is_read) {
+      setMessages(prev => prev.map(m => m.id === msg.id ? { ...m, is_read: true } : m))
+      try { if (supabase) await supabase.from('messages').update({ is_read: true }).eq('id', msg.id) } catch { /* ignore */ }
     }
   }
 
-  const unreadCount = messages.filter(m => !m.read).length
+  const deleteMessage = async (id) => {
+    try { if (supabase) await supabase.from('messages').delete().eq('id', id) } catch { /* ignore */ }
+    setMessages(prev => prev.filter(m => m.id !== id))
+    if (selected?.id === id) { setSelected(null); setShowDetail(false) }
+    showToast('🗑 Message deleted.')
+  }
 
-  // On mobile: show either list or detail, not both
+  const sendReply = () => {
+    if (!reply.trim() || !selected) return
+    const whatsappMsg = encodeURIComponent(`Hi ${selected.name}, regarding your message "${selected.subject}": ${reply}`)
+    window.open(`https://wa.me/?text=${whatsappMsg}`, '_blank')
+    setReply('')
+    showToast('✅ Reply composed!')
+  }
+
+  const unreadCount = messages.filter(m => !m.is_read).length
   const showList = !isMobile || !showDetail
   const showDetailPanel = !isMobile || showDetail
 
+  const formatTime = (ts) => {
+    if (!ts) return ''
+    const d = new Date(ts)
+    const now = new Date()
+    const diff = now - d
+    if (diff < 60000) return 'Just now'
+    if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`
+    if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`
+    return d.toLocaleDateString()
+  }
+
   return (
     <div className="admin-messages">
+      {toast && <div className="admin-toast">{toast}</div>}
+
       <div className="admin-section-title">
         <div>
-          <h2>
-            Messages {unreadCount > 0 && <span className="unread-badge">{unreadCount}</span>}
-          </h2>
-          <p>Contact form submissions from your visitors.</p>
+          <h2>Messages {unreadCount > 0 && <span className="unread-badge">{unreadCount}</span>}</h2>
+          <p>Contact form submissions from your visitors — live from Supabase.</p>
         </div>
       </div>
 
-      <div className="messages-layout">
+      {loading ? (
+        <div style={{ padding: '2rem', color: 'var(--adm-text2)' }}>Loading messages...</div>
+      ) : (
+        <div className="messages-layout">
 
-        {/* List panel */}
-        {showList && (
-          <div className="messages-list admin-card">
-            <div className="admin-card-header">
-              <div className="admin-filter-tabs">
-                {['All', 'Unread', 'Read'].map(f => (
-                  <button key={f} className={`filter-tab ${filter === f ? 'active' : ''}`} onClick={() => setFilter(f)}>{f}</button>
-                ))}
-              </div>
-            </div>
-            {filtered.map(msg => (
-              <div
-                key={msg.id}
-                className={`message-item ${!msg.read ? 'unread' : ''} ${selected?.id === msg.id ? 'selected' : ''}`}
-                onClick={() => openMessage(msg)}
-              >
-                <span className="msg-avatar">{msg.avatar}</span>
-                <div className="msg-preview">
-                  <div className="msg-meta">
-                    <strong>{msg.name}</strong>
-                    <span>{msg.time}</span>
-                  </div>
-                  <p className="msg-subject">{msg.subject}</p>
-                  <p className="msg-snippet">{msg.message.substring(0, 60)}...</p>
+          {/* List panel */}
+          {showList && (
+            <div className="messages-list admin-card">
+              <div className="admin-card-header">
+                <div className="admin-filter-tabs">
+                  {['All', 'Unread', 'Read'].map(f => (
+                    <button key={f} className={`filter-tab ${filter === f ? 'active' : ''}`} onClick={() => setFilter(f)}>{f}</button>
+                  ))}
                 </div>
-                {!msg.read && <span className="unread-dot"></span>}
               </div>
-            ))}
-            {filtered.length === 0 && <p className="empty-state">No messages.</p>}
-          </div>
-        )}
-
-        {/* Detail panel */}
-        {showDetailPanel && (
-          <div className="message-detail admin-card">
-            {/* Mobile back button */}
-            {isMobile && showDetail && (
-              <button
-                className="msg-back-btn"
-                onClick={() => { setShowDetail(false); setSelected(null) }}
-              >
-                ← Back to Messages
-              </button>
-            )}
-
-            {selected ? (
-              <>
-                <div className="admin-card-header">
-                  <div>
-                    <h3>{selected.subject}</h3>
-                    <p style={{ fontSize: '0.8rem', color: 'var(--adm-text3)', marginTop: '0.2rem' }}>{selected.email}</p>
-                  </div>
-                  <button className="admin-btn-icon delete" onClick={() => deleteMessage(selected.id)}>🗑</button>
-                </div>
-                <div className="message-body">
-                  <div className="message-from">
-                    <span className="msg-avatar lg">{selected.avatar}</span>
-                    <div>
-                      <strong>{selected.name}</strong>
-                      <span>{selected.time}</span>
+              {filtered.length === 0 ? (
+                <p className="empty-state">
+                  {messages.length === 0
+                    ? 'No messages yet. Contact form submissions will appear here.'
+                    : 'No messages in this filter.'}
+                </p>
+              ) : filtered.map(msg => (
+                <div
+                  key={msg.id}
+                  className={`message-item ${!msg.is_read ? 'unread' : ''} ${selected?.id === msg.id ? 'selected' : ''}`}
+                  onClick={() => openMessage(msg)}
+                >
+                  <span className="msg-avatar">
+                    {msg.name ? msg.name.charAt(0).toUpperCase() : '?'}
+                  </span>
+                  <div className="msg-preview">
+                    <div className="msg-meta">
+                      <strong>{msg.name}</strong>
+                      <span>{formatTime(msg.created_at)}</span>
                     </div>
+                    <p className="msg-subject">{msg.subject}</p>
+                    <p className="msg-snippet">{(msg.message || '').substring(0, 60)}...</p>
                   </div>
-                  <p className="message-text">{selected.message}</p>
+                  {!msg.is_read && <span className="unread-dot"></span>}
                 </div>
-                <div className="message-reply">
-                  <h4>Reply</h4>
-                  <textarea
-                    rows={4}
-                    placeholder={`Reply to ${selected.name}...`}
-                    value={reply}
-                    onChange={e => setReply(e.target.value)}
-                  />
-                  <button className="admin-btn-primary" onClick={sendReply}>Send Reply →</button>
+              ))}
+            </div>
+          )}
+
+          {/* Detail panel */}
+          {showDetailPanel && (
+            <div className="message-detail admin-card">
+              {isMobile && showDetail && (
+                <button className="msg-back-btn" onClick={() => { setShowDetail(false); setSelected(null) }}>
+                  ← Back to Messages
+                </button>
+              )}
+
+              {selected ? (
+                <>
+                  <div className="admin-card-header">
+                    <div>
+                      <h3>{selected.subject}</h3>
+                      <p style={{ fontSize: '0.8rem', color: 'var(--adm-text3)', marginTop: '0.2rem' }}>{selected.email}</p>
+                    </div>
+                    <button className="admin-btn-icon delete" onClick={() => deleteMessage(selected.id)}>🗑</button>
+                  </div>
+                  <div className="message-body">
+                    <div className="message-from">
+                      <span className="msg-avatar lg" style={{ fontSize: '2rem', width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--adm-surface)', borderRadius: '50%', border: '1px solid var(--adm-border2)' }}>
+                        {selected.name?.charAt(0).toUpperCase()}
+                      </span>
+                      <div>
+                        <strong>{selected.name}</strong>
+                        <span style={{ display: 'block', fontSize: '0.75rem', color: 'var(--adm-text3)' }}>{formatTime(selected.created_at)}</span>
+                      </div>
+                    </div>
+                    <p className="message-text">{selected.message}</p>
+                  </div>
+                  <div className="message-reply">
+                    <h4>Reply via WhatsApp</h4>
+                    <textarea rows={4} placeholder={`Reply to ${selected.name}...`}
+                      value={reply} onChange={e => setReply(e.target.value)} />
+                    <button className="admin-btn-primary" onClick={sendReply}>Send Reply →</button>
+                  </div>
+                </>
+              ) : (
+                <div className="message-empty">
+                  <span>💬</span>
+                  <p>Select a message to read</p>
                 </div>
-              </>
-            ) : (
-              <div className="message-empty">
-                <span>💬</span>
-                <p>Select a message to read</p>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }

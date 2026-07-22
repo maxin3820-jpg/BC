@@ -1,14 +1,16 @@
 import React from 'react'
+import { useSettings } from '../../hooks/useSettings'
 import './CourseCard.css'
 
 const CourseCard = ({ course }) => {
+  const { settings } = useSettings()
   const { title, description, price, originalPrice, thumbnail, isFree, isNew, isBestseller } = course
 
   const symbol = 'PKR '
   const displayPrice = isFree ? 'Free' : `${symbol}${price}`
   const discount = originalPrice && !isFree ? Math.round((1 - price / originalPrice) * 100) : null
 
-  const whatsappNumber = '923036326202'
+  const whatsappNumber = (settings.whatsapp || '923036326202').replace(/\D/g, '')
   const whatsappMsg = encodeURIComponent(`Hi! I'm interested in the course: "${title}" — priced at ${displayPrice}. Can you help me enroll?`)
   const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMsg}`
 

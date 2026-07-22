@@ -5,11 +5,13 @@ import { SkeletonGrid } from '../components/Skeleton/Skeleton'
 import { stats } from '../data/courses'
 import { useCourses } from '../hooks/useCourses'
 import { usePacks } from '../hooks/usePacks'
+import { useSettings } from '../hooks/useSettings'
 import './Home.css'
 
 const Home = () => {
   const { courses, loading: coursesLoading } = useCourses()
-  const { packs } = usePacks()
+  const { packs, loading: packsLoading } = usePacks()
+  const { settings } = useSettings()
   return (
     <div className="home">
 
@@ -93,11 +95,14 @@ const Home = () => {
             </p>
           </div>
           <div className="courses-grid">
-            {packs.map(pack => {
+            {packsLoading
+              ? <SkeletonGrid count={3} />
+              : packs.map(pack => {
+              const whatsappNumber = (settings.whatsapp || '923036326202').replace(/\D/g, '')
               const symbol = 'PKR '
               const discount = pack.originalPrice ? Math.round((1 - pack.price / pack.originalPrice) * 100) : null
               const whatsappMsg = encodeURIComponent(`Hi! I'm interested in the pack: "${pack.title}" — priced at ${symbol}${pack.price}. Can you help me get it?`)
-              const whatsappLink = `https://wa.me/923036326202?text=${whatsappMsg}`
+              const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMsg}`
               const isImage = pack.thumbnail && (pack.thumbnail.startsWith('http') || pack.thumbnail.startsWith('data:'))
               return (
                 <div key={pack.id} className="course-card">

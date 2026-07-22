@@ -1,11 +1,12 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { useSettings } from '../../hooks/useSettings'
 import './Footer.css'
 
-const WHATSAPP = 'https://wa.me/923036326202'
-
 const Footer = () => {
+  const { settings } = useSettings()
   const year = new Date().getFullYear()
+  const whatsappLink = `https://wa.me/${(settings.whatsapp || '923036326202').replace(/\D/g, '')}`
 
   return (
     <footer className="footer">
@@ -15,10 +16,10 @@ const Footer = () => {
           {/* Brand */}
           <div className="footer-brand">
             <Link to="/" className="footer-logo">
-              <span className="logo-birsil">Birsil</span>
-              <span className="logo-courses">Courses</span>
+              <span className="logo-birsil">{(settings.site_name || 'Birsil Courses').split(' ')[0]}</span>
+              <span className="logo-courses">{(settings.site_name || 'Birsil Courses').split(' ').slice(1).join(' ') || 'Courses'}</span>
             </Link>
-            <p>Learn new skills and grab premium digital products. Grow your career with Birsil.</p>
+            <p>{settings.tagline || 'Learn new skills and grab premium digital products. Grow your career with Birsil.'}</p>
           </div>
 
           {/* Platform */}
@@ -39,7 +40,7 @@ const Footer = () => {
               <li><Link to="/packs">Digital Packs</Link></li>
               <li><Link to="/contact">Contact Us</Link></li>
               <li>
-                <a href={WHATSAPP} target="_blank" rel="noopener noreferrer">
+                <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
                   WhatsApp Us
                 </a>
               </li>
