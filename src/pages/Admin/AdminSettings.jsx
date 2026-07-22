@@ -77,8 +77,9 @@ const AdminSettings = () => {
   const savePassword = (e) => {
     e.preventDefault()
     if (password.newPass !== password.confirm) { showToast('❌ Passwords do not match!'); return }
-    if (password.current !== import.meta.env.VITE_ADMIN_PASSWORD) { showToast('❌ Current password is incorrect!'); return }
-    showToast('✅ Password updated! (Update .env to persist)')
+    const currentAdminPass = import.meta.env.VITE_ADMIN_PASSWORD
+    if (!currentAdminPass || password.current !== currentAdminPass) { showToast('❌ Current password is incorrect!'); return }
+    showToast('✅ Password noted — update VITE_ADMIN_PASSWORD in your Netlify env vars to persist.')
     setPassword({ current: '', newPass: '', confirm: '' })
   }
 

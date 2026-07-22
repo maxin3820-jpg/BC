@@ -1,6 +1,6 @@
 import React from 'react'
 import { usePacks } from '../hooks/usePacks'
-import { useSettings } from '../hooks/useSettings'
+import { useSettings } from '../context/SettingsContext'
 import { SkeletonGrid } from '../components/Skeleton/Skeleton'
 import './Packs.css'
 

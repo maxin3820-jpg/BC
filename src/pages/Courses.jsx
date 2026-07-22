@@ -2,10 +2,12 @@ import React, { useState, useMemo } from 'react'
 import CourseCard from '../components/CourseCard/CourseCard'
 import { SkeletonGrid } from '../components/Skeleton/Skeleton'
 import { useCourses } from '../hooks/useCourses'
+import { useSettings } from '../context/SettingsContext'
 import './Courses.css'
 
 const Courses = () => {
   const { courses, loading } = useCourses()
+  const { settings } = useSettings()
   const [search, setSearch] = useState('')
   const [showFreeOnly, setShowFreeOnly] = useState(false)
 
@@ -69,7 +71,7 @@ const Courses = () => {
         ) : filtered.length > 0 ? (
           <div className="courses-grid-full">
             {filtered.map(course => (
-              <CourseCard key={course.id} course={course} />
+              <CourseCard key={course.id} course={course} whatsappNumber={settings.whatsapp} />
             ))}
           </div>
         ) : (

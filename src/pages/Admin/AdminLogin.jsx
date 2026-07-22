@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './Admin.css'
 
-const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL || 'maxin3820@gmail.com'
-const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'admin12345'
+const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL
+const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD
 
 const AdminLogin = ({ onLogin }) => {
   const [form, setForm] = useState({ email: '', password: '' })

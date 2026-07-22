@@ -5,7 +5,7 @@ import { SkeletonGrid } from '../components/Skeleton/Skeleton'
 import { stats } from '../data/courses'
 import { useCourses } from '../hooks/useCourses'
 import { usePacks } from '../hooks/usePacks'
-import { useSettings } from '../hooks/useSettings'
+import { useSettings } from '../context/SettingsContext'
 import './Home.css'
 
 const Home = () => {
@@ -76,7 +76,7 @@ const Home = () => {
           <div className="courses-grid">
             {coursesLoading
               ? <SkeletonGrid count={6} />
-              : courses.map(course => <CourseCard key={course.id} course={course} />)
+              : courses.map(course => <CourseCard key={course.id} course={course} whatsappNumber={settings.whatsapp} />)
             }
           </div>
           <div className="section-cta">

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { supabase } from '../lib/supabase'
-import { useSettings } from '../hooks/useSettings'
+import { useSettings } from '../context/SettingsContext'
 import './Contact.css'
 
 const faqs = [
