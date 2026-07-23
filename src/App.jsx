@@ -21,6 +21,7 @@ import AdminAnalytics from './pages/Admin/AdminAnalytics'
 import AdminSettings from './pages/Admin/AdminSettings'
 import AdminFAQs from './pages/Admin/AdminFAQs'
 import AdminTemplates from './pages/Admin/AdminTemplates'
+import AdminReorder from './pages/Admin/AdminReorder'
 
 // Wraps admin child routes — redirects to login if not authenticated
 const RequireAdmin = ({ isAdmin, children }) => {
@@ -75,6 +76,7 @@ function App() {
             <Route path="settings" element={<AdminSettings />} />
             <Route path="faqs" element={<AdminFAQs />} />
             <Route path="templates" element={<AdminTemplates />} />
+            <Route path="reorder" element={<AdminReorder />} />
           </Route>
 
           <Route path="*" element={<NotFound />} />

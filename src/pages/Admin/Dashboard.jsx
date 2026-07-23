@@ -176,6 +176,7 @@ const Dashboard = () => {
         <div className="quick-actions">
           <Link to="/admin/courses" className="quick-action"><span>➕</span> Add Course</Link>
           <Link to="/admin/packs" className="quick-action"><span>📦</span> Manage Packs</Link>
+          <Link to="/admin/reorder" className="quick-action"><span>↕️</span> Reorder</Link>
           <Link to="/admin/messages" className="quick-action"><span>💬</span> Messages</Link>
           <Link to="/admin/faqs" className="quick-action"><span>❓</span> Edit FAQs</Link>
           <Link to="/admin/templates" className="quick-action"><span>📋</span> Templates</Link>
