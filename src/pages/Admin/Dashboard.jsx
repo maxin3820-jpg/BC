@@ -12,11 +12,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     const load = async () => {
-      if (!supabase) {
-        setCourses(localCourses)
-        setLoading(false)
-        return
-      }
+      if (!supabase) { setCourses(localCourses); setLoading(false); return }
       try {
         const [coursesRes, msgRes] = await Promise.all([
           supabase.from('courses').select('*').order('sort_order', { ascending: true }),
@@ -40,7 +36,6 @@ const Dashboard = () => {
     load()
 
     if (!supabase) return
-    // Live unread badge
     const channel = supabase
       .channel('dashboard-messages')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, async () => {
@@ -62,7 +57,7 @@ const Dashboard = () => {
     <div className="admin-dashboard">
       <div className="admin-section-title">
         <div>
-          <h2>Dashboard Overview</h2>
+          <h2>Dashboard</h2>
           <p>Welcome back! Here's what's happening with Birsil Courses.</p>
         </div>
       </div>
@@ -81,50 +76,97 @@ const Dashboard = () => {
         ))}
       </div>
 
-      <div className="admin-two-col">
-        {/* Courses List */}
-        <div className="admin-card">
-          <div className="admin-card-header">
-            <h3>All Courses</h3>
-            <Link to="/admin/courses" className="admin-link">Manage →</Link>
+      {/* Messages Summary */}
+      <div className="admin-card dash-messages-card" style={{ marginBottom: '1.5rem' }}>
+        <div className="admin-card-header">
+          <h3>Messages {unreadMessages > 0 && <span className="unread-badge">{unreadMessages}</span>}</h3>
+          <Link to="/admin/messages" className="admin-link">View All →</Link>
+        </div>
+        {totalMessages === 0 ? (
+          <div className="dash-empty">
+            <span>💬</span>
+            <p>No messages yet. Contact form submissions will appear here.</p>
           </div>
-          <div className="admin-table">
-            <div className="admin-table-head" style={{ gridTemplateColumns: '2fr 1fr 1fr' }}>
-              <span>Course</span><span>Price</span><span>Status</span>
+        ) : (
+          <div className="dash-msg-summary">
+            <div className="dash-msg-stat">
+              <span className="dash-msg-num">{totalMessages}</span>
+              <span className="dash-msg-label">Total</span>
             </div>
-            {loading ? (
-              <p style={{ padding: '1rem', color: 'var(--adm-text3)', fontSize: '0.875rem' }}>Loading...</p>
-            ) : courses.map(course => (
-              <div key={course.id} className="admin-table-row" style={{ gridTemplateColumns: '2fr 1fr 1fr' }}>
-                <span className="atc-title" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{course.title}</span>
-                <span>{course.isFree ? 'Free' : `PKR ${course.price}`}</span>
-                <span>
-                  {course.isBestseller && <span className="mini-badge bestseller">⭐</span>}
-                  {course.isNew && <span className="mini-badge new-badge">New</span>}
-                  {course.isFree && <span className="mini-badge free-badge">Free</span>}
-                  {!course.isBestseller && !course.isNew && !course.isFree && <span style={{ color: 'var(--adm-accent)', fontSize: '0.75rem' }}>Active</span>}
-                </span>
-              </div>
-            ))}
+            <div className="dash-msg-divider" />
+            <div className="dash-msg-stat">
+              <span className="dash-msg-num" style={{ color: unreadMessages > 0 ? '#60A5FA' : 'var(--adm-accent)' }}>{unreadMessages}</span>
+              <span className="dash-msg-label">Unread</span>
+            </div>
+            <div className="dash-msg-divider" />
+            <div className="dash-msg-stat">
+              <span className="dash-msg-num" style={{ color: 'var(--adm-accent)' }}>{totalMessages - unreadMessages}</span>
+              <span className="dash-msg-label">Read</span>
+            </div>
+            {unreadMessages > 0 && (
+              <Link to="/admin/messages" className="admin-btn-primary dash-read-btn">
+                Read Now →
+              </Link>
+            )}
           </div>
+        )}
+      </div>
+
+      {/* Courses List */}
+      <div className="admin-card" style={{ marginBottom: '1.5rem' }}>
+        <div className="admin-card-header">
+          <h3>All Courses</h3>
+          <Link to="/admin/courses" className="admin-link">Manage →</Link>
         </div>
 
-        {/* Messages summary */}
-        <div className="admin-card">
-          <div className="admin-card-header">
-            <h3>Messages {unreadMessages > 0 && <span className="unread-badge">{unreadMessages}</span>}</h3>
-            <Link to="/admin/messages" className="admin-link">View All →</Link>
+        {/* Desktop table */}
+        <div className="dash-courses-table">
+          <div className="dash-table-head">
+            <span>Course</span><span>Price</span><span>Status</span>
           </div>
-          {totalMessages === 0 ? (
-            <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--adm-text3)', fontSize: '0.875rem' }}>
-              No messages yet. Contact form submissions will appear here.
+          {loading ? (
+            <p style={{ padding: '1rem', color: 'var(--adm-text3)', fontSize: '0.875rem' }}>Loading...</p>
+          ) : courses.map(course => (
+            <div key={course.id} className="dash-table-row">
+              <span className="dash-course-title">{course.title}</span>
+              <span className="dash-course-price">{course.isFree ? 'Free' : `PKR ${course.price}`}</span>
+              <span className="dash-course-status">
+                {course.isBestseller && <span className="mini-badge bestseller">⭐</span>}
+                {course.isNew && <span className="mini-badge new-badge">New</span>}
+                {course.isFree && <span className="mini-badge free-badge">Free</span>}
+                {!course.isBestseller && !course.isNew && !course.isFree && (
+                  <span style={{ color: 'var(--adm-accent)', fontSize: '0.75rem', fontWeight: 600 }}>● Active</span>
+                )}
+              </span>
             </div>
-          ) : (
-            <div style={{ padding: '1rem', color: 'var(--adm-text2)', fontSize: '0.875rem' }}>
-              <p>📩 <strong>{totalMessages}</strong> total messages</p>
-              {unreadMessages > 0 && <p style={{ color: '#60A5FA', marginTop: '0.5rem' }}>🔵 <strong>{unreadMessages}</strong> unread — <Link to="/admin/messages" className="admin-link">read now</Link></p>}
-            </div>
+          ))}
+          {!loading && courses.length === 0 && (
+            <p style={{ padding: '1.5rem', textAlign: 'center', color: 'var(--adm-text3)', fontSize: '0.875rem' }}>
+              No courses yet. <Link to="/admin/courses" className="admin-link">Add one →</Link>
+            </p>
           )}
+        </div>
+
+        {/* Mobile cards */}
+        <div className="dash-courses-mobile">
+          {loading ? (
+            <p style={{ padding: '1rem', color: 'var(--adm-text3)', fontSize: '0.875rem' }}>Loading...</p>
+          ) : courses.map(course => (
+            <div key={course.id} className="dash-course-card">
+              <div className="dash-course-card-title">{course.title}</div>
+              <div className="dash-course-card-meta">
+                <span className="dash-course-price">{course.isFree ? 'Free' : `PKR ${course.price}`}</span>
+                <span>
+                  {course.isBestseller && <span className="mini-badge bestseller">⭐ Best</span>}
+                  {course.isNew && <span className="mini-badge new-badge">New</span>}
+                  {course.isFree && <span className="mini-badge free-badge">Free</span>}
+                  {!course.isBestseller && !course.isNew && !course.isFree && (
+                    <span style={{ color: 'var(--adm-accent)', fontSize: '0.72rem', fontWeight: 600 }}>● Active</span>
+                  )}
+                </span>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -132,10 +174,14 @@ const Dashboard = () => {
       <div className="admin-card">
         <div className="admin-card-header"><h3>Quick Actions</h3></div>
         <div className="quick-actions">
-          <Link to="/admin/courses" className="quick-action"><span>➕</span> Add New Course</Link>
+          <Link to="/admin/courses" className="quick-action"><span>➕</span> Add Course</Link>
           <Link to="/admin/packs" className="quick-action"><span>📦</span> Manage Packs</Link>
-          <Link to="/admin/messages" className="quick-action"><span>💬</span> Check Messages</Link>
-          <a href="/" target="_blank" rel="noopener noreferrer" className="quick-action"><span>🌐</span> Preview Site</a>
+          <Link to="/admin/messages" className="quick-action"><span>💬</span> Messages</Link>
+          <Link to="/admin/faqs" className="quick-action"><span>❓</span> Edit FAQs</Link>
+          <Link to="/admin/templates" className="quick-action"><span>📋</span> Templates</Link>
+          <Link to="/admin/settings" className="quick-action"><span>⚙️</span> Settings</Link>
+          <Link to="/admin/analytics" className="quick-action"><span>📈</span> Analytics</Link>
+          <a href="/" target="_blank" rel="noopener noreferrer" className="quick-action"><span>🌐</span> View Site</a>
         </div>
       </div>
     </div>
