@@ -3,8 +3,11 @@ import { supabase } from '../../lib/supabase'
 
 // Fallback hardcoded FAQs if Supabase not connected
 const defaultFaqs = [
-  { id: 1, question: 'How do I buy a course?', answer: 'Click "Buy on WhatsApp" on any course card.', sort_order: 1, is_active: true },
-  { id: 2, question: 'How do I pay?', answer: 'We accept JazzCash, Easypaisa, and Crypto.', sort_order: 2, is_active: true },
+  { id: 1, question: 'How do I buy a course?', answer: 'Click "Buy on WhatsApp" on any course card and send us a message. We\'ll guide you through the purchase instantly.', sort_order: 1, is_active: true },
+  { id: 2, question: 'How do I pay?', answer: 'We accept JazzCash, Easypaisa, and Crypto. Contact us on WhatsApp and we\'ll guide you through the payment.', sort_order: 2, is_active: true },
+  { id: 3, question: 'Can I access on mobile?', answer: 'Yes. Everything works on phone, tablet and desktop. No app needed.', sort_order: 3, is_active: true },
+  { id: 4, question: 'Is there a refund policy?', answer: 'We do not offer refunds. However, if you face any issues with our products, we will fix them for you — just reach out to us on WhatsApp.', sort_order: 4, is_active: true },
+  { id: 5, question: 'What are Digital Packs?', answer: 'Packs are bundles of premium digital products — templates, design kits, code snippets and more. Buy once, use forever.', sort_order: 5, is_active: true },
 ]
 
 const emptyForm = { question: '', answer: '' }
