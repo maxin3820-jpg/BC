@@ -2,7 +2,6 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import CourseCard from '../components/CourseCard/CourseCard'
 import { SkeletonGrid } from '../components/Skeleton/Skeleton'
-import { stats } from '../data/courses'
 import { useCourses } from '../hooks/useCourses'
 import { usePacks } from '../hooks/usePacks'
 import { useSettings } from '../context/SettingsContext'
@@ -45,20 +44,6 @@ const Home = () => {
               ))}
             </div>
             <p><strong>50,000+</strong> students already learning</p>
-          </div>
-        </div>
-      </section>
-
-      {/* ===== STATS ===== */}
-      <section className="stats-section">
-        <div className="container">
-          <div className="stats-grid">
-            {stats.map((stat, i) => (
-              <div key={i} className="stat-card">
-                <div className="stat-value gradient-text">{stat.value}</div>
-                <div className="stat-label">{stat.label}</div>
-              </div>
-            ))}
           </div>
         </div>
       </section>
