@@ -27,13 +27,12 @@ const Home = () => {
             <span className="badge badge-primary">🚀 New courses added weekly</span>
           </div>
           <h1 className="hero-title">
-            Learn Skills That
+            Affordable Courses That
             <br />
-            <span className="gradient-text">Shape Your Future</span>
+            <span className="gradient-text">Change Careers</span>
           </h1>
           <p className="hero-subtitle">
-            Join 50,000+ learners mastering in-demand skills.
-            Expert-led courses — learn at your own pace.
+            Premium courses, bundles, packs and PDFs — handpicked and priced so anyone can start. Buy directly via WhatsApp, get lifetime access.
           </p>
           <div className="hero-actions">
             <Link to="/courses" className="btn btn-primary btn-lg">Explore Courses →</Link>
