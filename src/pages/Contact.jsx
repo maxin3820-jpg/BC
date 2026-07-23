@@ -6,7 +6,7 @@ import './Contact.css'
 const faqs = [
   { q: 'How do I buy a course?', a: 'Click "Buy on WhatsApp" on any course card and send us a message. We will guide you through the purchase process.' },
   { q: 'Can I access courses on mobile?', a: 'Absolutely. Birsil Courses is fully responsive and works on any device — phone, tablet, or desktop.' },
-  { q: 'What is the refund policy?', a: 'We offer a 30-day money-back guarantee on all paid courses, no questions asked.' },
+  { q: 'What is the refund policy?', a: 'We do not offer refunds. However, if you face any issues with our products, we will fix them for you — just reach out to us on WhatsApp.' },
   { q: 'How long do I have access to a course?', a: 'You get lifetime access to any course you purchase, including all future updates.' },
   { q: 'How do I pay for a course?', a: 'Contact us via WhatsApp and we will share the available payment methods.' },
 ]

@@ -12,7 +12,7 @@ const faqs = [
   { q: 'What do I get after buying?', a: 'You get lifetime access to the course materials — no expiry, no subscriptions. Yours forever.' },
   { q: 'How do I pay?', a: 'We accept multiple payment methods. Contact us on WhatsApp and we\'ll share the available options.' },
   { q: 'Can I access on mobile?', a: 'Yes. Everything works on phone, tablet and desktop. No app needed.' },
-  { q: 'Is there a refund policy?', a: 'We offer a 30-day money-back guarantee on all paid courses, no questions asked.' },
+  { q: 'Is there a refund policy?', a: 'We do not offer refunds. However, if you face any issues with our products, we will fix them for you — just reach out to us on WhatsApp.' },
   { q: 'What are Digital Packs?', a: 'Packs are bundles of premium digital products — templates, design kits, code snippets and more. Buy once, use forever.' },
 ]
 
