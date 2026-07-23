@@ -11,6 +11,11 @@ const defaultSettings = {
   youtube: 'https://youtube.com',
   linkedin: 'https://linkedin.com',
   instagram: 'https://instagram.com',
+  announcement_text: '',
+  announcement_active: 'false',
+  hero_badge: '',
+  hero_headline: '',
+  hero_subtext: '',
 }
 
 const SettingsContext = createContext({ settings: defaultSettings, loading: false })
