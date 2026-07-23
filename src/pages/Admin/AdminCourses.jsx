@@ -12,6 +12,7 @@ const AdminCourses = () => {
   const [courses, setCourses] = useState([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
+  const [visibilityFilter, setVisibilityFilter] = useState('all') // 'all' | 'public' | 'hidden'
   const [showModal, setShowModal] = useState(false)
   const [editingId, setEditingId] = useState(null)
   const [form, setForm] = useState(emptyForm)
@@ -21,7 +22,7 @@ const AdminCourses = () => {
   const [imageUploading, setImageUploading] = useState(false)
   const fileInputRef = useRef(null)
 
-  // ── Load from Supabase on mount ───────────────────────────────────────────
+  // ── Load ALL courses (including hidden) for admin ─────────────────────────
   useEffect(() => {
     const load = async () => {
       if (!supabase) { setCourses(localCourses); setLoading(false); return }
@@ -36,6 +37,20 @@ const AdminCourses = () => {
     }
     load()
   }, [])
+
+  // ── Toggle visibility (hide/show) ─────────────────────────────────────────
+  const handleToggleVisibility = async (course) => {
+    const newActive = !course.isActive
+    try {
+      if (supabase) {
+        await supabase.from('courses').update({ is_active: newActive }).eq('id', course.id)
+      }
+      setCourses(prev => prev.map(c => c.id === course.id ? { ...c, isActive: newActive } : c))
+      showToast(newActive ? '✅ Course is now Public' : '🙈 Course is now Hidden')
+    } catch {
+      showToast('❌ Failed to update visibility')
+    }
+  }
 
   // ── Image upload ──────────────────────────────────────────────────────────
   const handleImageUpload = async (e) => {
@@ -62,9 +77,19 @@ const AdminCourses = () => {
     } finally { setImageUploading(false) }
   }
 
-  const filtered = courses.filter(c =>
-    c.title.toLowerCase().includes(search.toLowerCase())
-  )
+  // ── Filtering ─────────────────────────────────────────────────────────────
+  const filtered = courses.filter(c => {
+    const matchSearch = c.title.toLowerCase().includes(search.toLowerCase())
+    const matchVisibility =
+      visibilityFilter === 'all' ? true :
+      visibilityFilter === 'public' ? c.isActive !== false :
+      c.isActive === false
+    return matchSearch && matchVisibility
+  })
+
+  // ── Counts ────────────────────────────────────────────────────────────────
+  const publicCount = courses.filter(c => c.isActive !== false).length
+  const hiddenCount = courses.filter(c => c.isActive === false).length
 
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(''), 3000) }
 
@@ -103,6 +128,7 @@ const AdminCourses = () => {
       isBestseller: payload.is_bestseller,
       isNew: payload.is_new,
       isFree: payload.is_free,
+      isActive: true,
     }
     try {
       if (editingId) {
@@ -129,7 +155,7 @@ const AdminCourses = () => {
   }
 
   const handleDelete = async (id) => {
-    try { if (supabase) await supabase.from('courses').delete().eq('id', id) } catch { /* fallback */ }
+    try { if (supabase) await supabase.from('courses').delete().eq('id', id) } catch { }
     setCourses(prev => prev.filter(c => c.id !== id))
     setDeleteConfirm(null)
     showToast('🗑 Course deleted.')
@@ -153,7 +179,28 @@ const AdminCourses = () => {
         <div className="admin-card-header">
           <input className="admin-search" type="text" placeholder="🔍 Search courses..."
             value={search} onChange={e => setSearch(e.target.value)} />
-          <span className="admin-count">{filtered.length} courses</span>
+
+          {/* Visibility filter tabs */}
+          <div className="visibility-tabs">
+            <button
+              className={`visibility-tab ${visibilityFilter === 'all' ? 'active' : ''}`}
+              onClick={() => setVisibilityFilter('all')}
+            >
+              All <span className="vtab-count">{courses.length}</span>
+            </button>
+            <button
+              className={`visibility-tab public ${visibilityFilter === 'public' ? 'active' : ''}`}
+              onClick={() => setVisibilityFilter('public')}
+            >
+              🟢 Public <span className="vtab-count">{publicCount}</span>
+            </button>
+            <button
+              className={`visibility-tab hidden ${visibilityFilter === 'hidden' ? 'active' : ''}`}
+              onClick={() => setVisibilityFilter('hidden')}
+            >
+              🔴 Hidden <span className="vtab-count">{hiddenCount}</span>
+            </button>
+          </div>
         </div>
 
         {/* Desktop table */}
@@ -162,9 +209,9 @@ const AdminCourses = () => {
             <span>Course</span><span>Price</span><span>Status</span><span>Actions</span>
           </div>
           {filtered.map(course => (
-            <div key={course.id} className="admin-table-row">
+            <div key={course.id} className={`admin-table-row ${course.isActive === false ? 'row-hidden' : ''}`}>
               <span className="atc-course-cell">
-                <div className="atc-thumb">
+                <div className="atc-thumb" style={{ opacity: course.isActive === false ? 0.5 : 1 }}>
                   {course.thumbnail && (course.thumbnail.startsWith('http') || course.thumbnail.startsWith('data:'))
                     ? <img src={course.thumbnail} alt={course.title} />
                     : <div className="atc-thumb-gradient" style={{ background: course.thumbnail || 'linear-gradient(135deg, #1E3A8A, #1D4ED8)' }} />}
@@ -174,30 +221,45 @@ const AdminCourses = () => {
                     {course.isBestseller && <span className="mini-badge bestseller">⭐</span>}
                     {course.isNew && <span className="mini-badge new-badge">New</span>}
                     {course.isFree && <span className="mini-badge free-badge">Free</span>}
-                    {course.currency && <span className="mini-badge" style={{ background: 'rgba(29,78,216,0.2)', color: '#60A5FA' }}>{course.currency}</span>}
+                    {course.isActive === false && <span className="mini-badge" style={{ background: 'rgba(239,68,68,0.15)', color: '#EF4444' }}>Hidden</span>}
                     {course.title}
                   </div>
                 </div>
               </span>
               <span style={{ color: 'var(--adm-text)', fontWeight: 600 }}>{course.isFree ? 'Free' : `PKR ${course.price}`}</span>
-              <span style={{ color: 'var(--adm-accent)', fontSize: '0.8rem', fontWeight: 600 }}>● Active</span>
+              <span style={{
+                color: course.isActive === false ? '#EF4444' : 'var(--adm-accent)',
+                fontSize: '0.8rem', fontWeight: 600
+              }}>
+                {course.isActive === false ? '● Hidden' : '● Public'}
+              </span>
               <span className="admin-actions">
+                <button
+                  className="admin-btn-icon"
+                  title={course.isActive === false ? 'Make Public' : 'Hide Course'}
+                  onClick={() => handleToggleVisibility(course)}
+                  style={{ fontSize: '1rem' }}
+                >
+                  {course.isActive === false ? '👁' : '🙈'}
+                </button>
                 <button className="admin-btn-icon edit" onClick={() => openEdit(course)}>✏️</button>
                 <button className="admin-btn-icon delete" onClick={() => setDeleteConfirm(course.id)}>🗑</button>
               </span>
             </div>
           ))}
           {filtered.length === 0 && (
-            <p style={{ textAlign: 'center', color: 'var(--adm-text3)', padding: '2rem', fontSize: '0.875rem' }}>No courses found.</p>
+            <p style={{ textAlign: 'center', color: 'var(--adm-text3)', padding: '2rem', fontSize: '0.875rem' }}>
+              {visibilityFilter === 'hidden' ? 'No hidden courses.' : visibilityFilter === 'public' ? 'No public courses.' : 'No courses found.'}
+            </p>
           )}
         </div>
 
         {/* Mobile cards */}
         <div className="courses-mobile-cards">
           {filtered.map(course => (
-            <div key={course.id} className="course-mobile-card">
+            <div key={course.id} className={`course-mobile-card ${course.isActive === false ? 'card-hidden' : ''}`}>
               <div className="cmc-header">
-                <div className="cmc-thumb">
+                <div className="cmc-thumb" style={{ opacity: course.isActive === false ? 0.5 : 1 }}>
                   {course.thumbnail && (course.thumbnail.startsWith('http') || course.thumbnail.startsWith('data:'))
                     ? <img src={course.thumbnail} alt={course.title} />
                     : <div className="cmc-thumb-bg" style={{ background: course.thumbnail || 'linear-gradient(135deg, #1E3A8A, #1D4ED8)' }} />}
@@ -207,6 +269,7 @@ const AdminCourses = () => {
                     {course.isBestseller && <span className="mini-badge bestseller">⭐ Best</span>}
                     {course.isNew && <span className="mini-badge new-badge">New</span>}
                     {course.isFree && <span className="mini-badge free-badge">Free</span>}
+                    {course.isActive === false && <span className="mini-badge" style={{ background: 'rgba(239,68,68,0.15)', color: '#EF4444' }}>Hidden</span>}
                   </div>
                   <div className="cmc-title">{course.title}</div>
                 </div>
@@ -216,14 +279,20 @@ const AdminCourses = () => {
                   <span className="cmc-meta-label">Price</span>
                   <span className="cmc-meta-value">{course.isFree ? 'Free' : `PKR ${course.price}`}</span>
                 </div>
-                {course.originalPrice && !course.isFree && (
-                  <div className="cmc-meta-item">
-                    <span className="cmc-meta-label">Original</span>
-                    <span className="cmc-meta-value" style={{ textDecoration: 'line-through', color: 'var(--adm-text3)' }}>PKR {course.originalPrice}</span>
-                  </div>
-                )}
+                <div className="cmc-meta-item">
+                  <span className="cmc-meta-label">Status</span>
+                  <span className="cmc-meta-value" style={{ color: course.isActive === false ? '#EF4444' : '#22C55E', fontWeight: 600 }}>
+                    {course.isActive === false ? 'Hidden' : 'Public'}
+                  </span>
+                </div>
               </div>
               <div className="cmc-actions">
+                <button
+                  className={`cmc-btn ${course.isActive === false ? 'cmc-btn-show' : 'cmc-btn-hide'}`}
+                  onClick={() => handleToggleVisibility(course)}
+                >
+                  {course.isActive === false ? '👁 Show' : '🙈 Hide'}
+                </button>
                 <button className="cmc-btn cmc-btn-edit" onClick={() => openEdit(course)}>✏️ Edit</button>
                 <button className="cmc-btn cmc-btn-delete" onClick={() => setDeleteConfirm(course.id)}>🗑 Delete</button>
               </div>

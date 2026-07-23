@@ -60,4 +60,5 @@ export const mapCourse = (c) => ({
   isBestseller: c.is_bestseller,
   isNew: c.is_new,
   isFree: c.is_free,
+  isActive: c.is_active,
 })
