@@ -141,46 +141,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ===== HOW IT WORKS ===== */}
-      <section className="section hiw-section">
-        <div className="container">
-          <div className="section-header">
-            <h2 className="section-title">How It <span className="gradient-text">Works</span></h2>
-            <p className="section-subtitle">
-              Getting started is simple. Three steps to your next skill.
-            </p>
-          </div>
-
-          <div className="hiw-steps">
-            {/* Arrow between steps */}
-            <div className="hiw-card">
-              <div className="hiw-number">1</div>
-              <div className="hiw-icon">🔍</div>
-              <h3>Browse</h3>
-              <p>Explore our courses and digital packs — Web Dev, UI/UX, Python, Design Bundles and more. Find what matches your goal.</p>
-            </div>
-
-            <div className="hiw-arrow">→</div>
-
-            <div className="hiw-card">
-              <div className="hiw-number">2</div>
-              <div className="hiw-icon">💬</div>
-              <h3>Order on WhatsApp</h3>
-              <p>Tap "Buy on WhatsApp" on any course or pack. Our team responds instantly to confirm your purchase and payment.</p>
-            </div>
-
-            <div className="hiw-arrow">→</div>
-
-            <div className="hiw-card hiw-card--accent">
-              <div className="hiw-number">3</div>
-              <div className="hiw-icon">🚀</div>
-              <h3>Start Learning</h3>
-              <p>Receive your materials instantly and start mastering new skills at your own pace — anytime, any device.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* ===== CTA BANNER ===== */}
       <section className="cta-banner">
         <div className="container">
