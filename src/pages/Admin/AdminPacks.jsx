@@ -87,7 +87,10 @@ const AdminPacks = () => {
   }
 
   const filtered = packs.filter(p => {
-    const matchSearch = p.title.toLowerCase().includes(search.toLowerCase())
+    const matchSearch = !search.trim() ||
+      search.toLowerCase().split(/\s+/).filter(Boolean).every(w =>
+        `${p.title} ${p.description || ''}`.toLowerCase().includes(w)
+      )
     const matchVisibility =
       visibilityFilter === 'all' ? true :
       visibilityFilter === 'public' ? p.isActive !== false :

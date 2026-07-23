@@ -79,7 +79,11 @@ const AdminCourses = () => {
 
   // ── Filtering ─────────────────────────────────────────────────────────────
   const filtered = courses.filter(c => {
-    const matchSearch = c.title.toLowerCase().includes(search.toLowerCase())
+    const matchSearch = !search.trim() || 
+      c.title.toLowerCase().split(/\s+/).some(() => true) && 
+      search.toLowerCase().split(/\s+/).filter(Boolean).every(w => 
+        `${c.title} ${c.description || ''}`.toLowerCase().includes(w)
+      )
     const matchVisibility =
       visibilityFilter === 'all' ? true :
       visibilityFilter === 'public' ? c.isActive !== false :

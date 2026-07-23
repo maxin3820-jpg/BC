@@ -3,6 +3,7 @@ import CourseCard from '../components/CourseCard/CourseCard'
 import { SkeletonGrid } from '../components/Skeleton/Skeleton'
 import { useCourses } from '../hooks/useCourses'
 import { useSettings } from '../context/SettingsContext'
+import { courseMatchesSearch } from '../lib/search'
 import './Courses.css'
 
 const Courses = () => {
@@ -14,11 +15,7 @@ const Courses = () => {
   const filtered = useMemo(() => {
     let result = [...courses]
     if (search.trim()) {
-      const q = search.toLowerCase()
-      result = result.filter(c =>
-        c.title.toLowerCase().includes(q) ||
-        (c.description || '').toLowerCase().includes(q)
-      )
+      result = result.filter(c => courseMatchesSearch(c, search))
     }
     if (showFreeOnly) {
       result = result.filter(c => c.isFree)
