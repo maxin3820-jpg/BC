@@ -89,8 +89,8 @@ const AdminLayout = ({ onLogout }) => {
             <h1 className="admin-page-title">Admin Panel</h1>
           </div>
           <div className="admin-topbar-right">
-            <a href="/" target="_blank" rel="noopener noreferrer" className="admin-view-site">
-              🌐 View Site
+            <a href="/" target="_blank" rel="noopener noreferrer" className="admin-back-site-btn">
+              ← Back to Website
             </a>
             <div className="admin-user">
               <span className="admin-avatar">👨‍💼</span>

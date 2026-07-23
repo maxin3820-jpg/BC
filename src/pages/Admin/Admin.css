@@ -175,15 +175,26 @@
 .admin-page-title { font-size: 1rem; font-weight: 700; color: var(--adm-text); }
 .admin-topbar-right { display: flex; align-items: center; gap: 1.25rem; }
 
-.admin-view-site {
-  font-size: 0.8rem; color: var(--adm-primary);
-  text-decoration: none; font-weight: 600;
+.admin-back-site-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  color: var(--adm-text2);
+  text-decoration: none;
+  font-weight: 600;
   padding: 0.4rem 0.875rem;
-  border: 1px solid rgba(30,58,138,0.3);
-  border-radius: 8px; transition: all 0.2s ease;
-  background: rgba(30,58,138,0.06);
+  border: 1px solid var(--adm-border);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  background: var(--adm-surface);
+  white-space: nowrap;
 }
-.admin-view-site:hover { background: rgba(30,58,138,0.12); border-color: var(--adm-primary); }
+.admin-back-site-btn:hover {
+  background: rgba(30,58,138,0.08);
+  border-color: var(--adm-primary);
+  color: var(--adm-primary);
+}
 
 .admin-user { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; font-weight: 600; color: var(--adm-text); }
 .admin-avatar { font-size: 1.4rem; }
@@ -785,7 +796,7 @@
   .admin-card-header { flex-direction: column; align-items: flex-start; gap: 0.625rem; }
   .admin-search { width: 100% !important; min-width: unset !important; }
   .admin-user-name { display: none !important; }
-  .admin-view-site { display: none !important; }
+  .admin-back-site-btn { font-size: 0.72rem !important; padding: 0.35rem 0.625rem !important; }
   .admin-section-title h2 { font-size: 1.15rem; }
 
   /* Stats — 2 col on mobile */
