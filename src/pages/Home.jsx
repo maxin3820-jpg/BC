@@ -5,6 +5,7 @@ import { SkeletonGrid } from '../components/Skeleton/Skeleton'
 import { useCourses } from '../hooks/useCourses'
 import { usePacks } from '../hooks/usePacks'
 import { useSettings } from '../context/SettingsContext'
+import { courseMatchesSearch } from '../lib/search'
 import './Home.css'
 
 const faqs = [
@@ -20,6 +21,11 @@ const Home = () => {
   const { packs, loading: packsLoading } = usePacks()
   const { settings } = useSettings()
   const [openFaq, setOpenFaq] = useState(null)
+  const [courseSearch, setCourseSearch] = useState('')
+
+  const filteredCourses = courseSearch.trim()
+    ? courses.filter(c => courseMatchesSearch(c, courseSearch))
+    : courses
   return (
     <div className="home">
 
@@ -66,11 +72,30 @@ const Home = () => {
             <p className="section-subtitle">
               Explore all available courses. New ones are added regularly — check back often.
             </p>
+            <div className="home-course-search">
+              <span className="home-search-icon">🔍</span>
+              <input
+                type="text"
+                placeholder="Search courses..."
+                value={courseSearch}
+                onChange={e => setCourseSearch(e.target.value)}
+                aria-label="Search courses"
+              />
+              {courseSearch && (
+                <button className="home-search-clear" onClick={() => setCourseSearch('')} aria-label="Clear">✕</button>
+              )}
+            </div>
           </div>
           <div className="courses-grid">
             {coursesLoading
               ? <SkeletonGrid count={6} />
-              : courses.map(course => <CourseCard key={course.id} course={course} whatsappNumber={settings.whatsapp} />)
+              : filteredCourses.length > 0
+                ? filteredCourses.map(course => <CourseCard key={course.id} course={course} whatsappNumber={settings.whatsapp} />)
+                : <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '3rem', color: 'var(--text-secondary)' }}>
+                    <div style={{ fontSize: '2rem', marginBottom: '0.75rem' }}>🔍</div>
+                    <p>No courses found for "<strong>{courseSearch}</strong>"</p>
+                    <button className="btn btn-outline" style={{ marginTop: '1rem' }} onClick={() => setCourseSearch('')}>Clear Search</button>
+                  </div>
             }
           </div>
           <div className="section-cta">
