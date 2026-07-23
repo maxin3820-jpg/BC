@@ -9,7 +9,7 @@ import './Home.css'
 
 const faqs = [
   { q: 'How do I buy a course?', a: 'Click "Buy on WhatsApp" on any course card and send us a message. We\'ll guide you through the purchase instantly.' },
-  { q: 'How do I pay?', a: 'We accept multiple payment methods. Contact us on WhatsApp and we\'ll share the available options.' },
+  { q: 'How do I pay?', a: 'We accept JazzCash, Easypaisa, and Crypto. Contact us on WhatsApp and we\'ll guide you through the payment.' },
   { q: 'Can I access on mobile?', a: 'Yes. Everything works on phone, tablet and desktop. No app needed.' },
   { q: 'Is there a refund policy?', a: 'We do not offer refunds. However, if you face any issues with our products, we will fix them for you — just reach out to us on WhatsApp.' },
   { q: 'What are Digital Packs?', a: 'Packs are bundles of premium digital products — templates, design kits, code snippets and more. Buy once, use forever.' },

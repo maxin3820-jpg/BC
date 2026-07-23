@@ -8,7 +8,7 @@ const faqs = [
   { q: 'Can I access courses on mobile?', a: 'Absolutely. Birsil Courses is fully responsive and works on any device — phone, tablet, or desktop.' },
   { q: 'What is the refund policy?', a: 'We do not offer refunds. However, if you face any issues with our products, we will fix them for you — just reach out to us on WhatsApp.' },
   { q: 'How long do I have access to a course?', a: 'You get lifetime access to any course you purchase, including all future updates.' },
-  { q: 'How do I pay for a course?', a: 'Contact us via WhatsApp and we will share the available payment methods.' },
+  { q: 'How do I pay for a course?', a: 'We accept JazzCash, Easypaisa, and Crypto. Contact us on WhatsApp and we\'ll guide you through the payment.' },
 ]
 
 const Contact = () => {
