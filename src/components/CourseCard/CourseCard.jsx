@@ -9,7 +9,7 @@ const CourseCard = ({ course, whatsappNumber = '923036326202' }) => {
   const discount = originalPrice && !isFree ? Math.round((1 - price / originalPrice) * 100) : null
 
   const waNumber = whatsappNumber.replace(/\D/g, '')
-  const whatsappMsg = encodeURIComponent(`Hi! I'm interested in the course: "${title}" — priced at ${displayPrice}. Can you help me enroll?`)
+  const whatsappMsg = encodeURIComponent(`Hi! I'm interested in the course: "${title}" — priced at ${displayPrice}. Can you help me get started?`)
   const whatsappLink = `https://wa.me/${waNumber}?text=${whatsappMsg}`
 
   const isImage = thumbnail && (thumbnail.startsWith('http') || thumbnail.startsWith('data:') || thumbnail.startsWith('/'))

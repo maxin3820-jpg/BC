@@ -44,7 +44,7 @@ const Home = () => {
                 <span key={i} className="trust-avatar">{emoji}</span>
               ))}
             </div>
-            <p><strong>50,000+</strong> students already enrolled</p>
+            <p><strong>50,000+</strong> students already learning</p>
           </div>
         </div>
       </section>
@@ -166,7 +166,7 @@ const Home = () => {
               <div className="hiw-number">2</div>
               <div className="hiw-icon">💬</div>
               <h3>Order on WhatsApp</h3>
-              <p>Tap "Buy on WhatsApp" on any course or pack. Our team responds instantly to confirm your enrollment and payment.</p>
+              <p>Tap "Buy on WhatsApp" on any course or pack. Our team responds instantly to confirm your purchase and payment.</p>
             </div>
 
             <div className="hiw-arrow">→</div>

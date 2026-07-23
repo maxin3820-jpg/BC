@@ -29,7 +29,7 @@ const Footer = () => {
               <li><Link to="/courses">All Courses</Link></li>
               <li><Link to="/packs">All Packs</Link></li>
               <li><Link to="/courses">Free Courses</Link></li>
-              <li><Link to="/contact">Enroll via WhatsApp</Link></li>
+              <li><Link to="/contact">Buy via WhatsApp</Link></li>
             </ul>
           </div>
 

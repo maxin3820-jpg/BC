@@ -18,7 +18,7 @@ const AdminSettings = () => {
   const [loadingSettings, setLoadingSettings] = useState(true)
   const [password, setPassword] = useState({ current: '', newPass: '', confirm: '' })
   const [notifications, setNotifications] = useState({
-    newEnrollment: true, newMessage: true, newReview: false, weeklyReport: true,
+    newPurchase: true, newMessage: true, newReview: false, weeklyReport: true,
   })
   const [toast, setToast] = useState('')
 

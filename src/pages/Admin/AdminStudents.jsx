@@ -1,14 +1,14 @@
 import React, { useState } from 'react'
 
 const students = [
-  { id: 1, name: 'Mohamed Adel', email: 'mohamed@example.com', enrolled: 3, joined: 'Jan 15, 2024', status: 'Active', avatar: '👨‍💻' },
-  { id: 2, name: 'Fatima Al-Rashid', email: 'fatima@example.com', enrolled: 2, joined: 'Feb 3, 2024', status: 'Active', avatar: '👩‍🎨' },
-  { id: 3, name: 'Yusuf Okafor', email: 'yusuf@example.com', enrolled: 4, joined: 'Mar 10, 2024', status: 'Active', avatar: '👨‍🔬' },
-  { id: 4, name: 'Sara Ahmed', email: 'sara@example.com', enrolled: 1, joined: 'Apr 22, 2024', status: 'Inactive', avatar: '👩‍💼' },
-  { id: 5, name: 'Khalid Hassan', email: 'khalid@example.com', enrolled: 5, joined: 'May 5, 2024', status: 'Active', avatar: '👨‍🎓' },
-  { id: 6, name: 'Nadia Karim', email: 'nadia@example.com', enrolled: 2, joined: 'Jun 18, 2024', status: 'Active', avatar: '👩‍🏫' },
-  { id: 7, name: 'Omar Farouq', email: 'omar@example.com', enrolled: 3, joined: 'Jul 1, 2024', status: 'Active', avatar: '👨‍💼' },
-  { id: 8, name: 'Lina Mahmoud', email: 'lina@example.com', enrolled: 1, joined: 'Jul 14, 2024', status: 'Inactive', avatar: '👩‍🔬' },
+  { id: 1, name: 'Mohamed Adel', email: 'mohamed@example.com', courses: 3, joined: 'Jan 15, 2024', status: 'Active', avatar: '👨‍💻' },
+  { id: 2, name: 'Fatima Al-Rashid', email: 'fatima@example.com', courses: 2, joined: 'Feb 3, 2024', status: 'Active', avatar: '👩‍🎨' },
+  { id: 3, name: 'Yusuf Okafor', email: 'yusuf@example.com', courses: 4, joined: 'Mar 10, 2024', status: 'Active', avatar: '👨‍🔬' },
+  { id: 4, name: 'Sara Ahmed', email: 'sara@example.com', courses: 1, joined: 'Apr 22, 2024', status: 'Inactive', avatar: '👩‍💼' },
+  { id: 5, name: 'Khalid Hassan', email: 'khalid@example.com', courses: 5, joined: 'May 5, 2024', status: 'Active', avatar: '👨‍🎓' },
+  { id: 6, name: 'Nadia Karim', email: 'nadia@example.com', courses: 2, joined: 'Jun 18, 2024', status: 'Active', avatar: '👩‍🏫' },
+  { id: 7, name: 'Omar Farouq', email: 'omar@example.com', courses: 3, joined: 'Jul 1, 2024', status: 'Active', avatar: '👨‍💼' },
+  { id: 8, name: 'Lina Mahmoud', email: 'lina@example.com', courses: 1, joined: 'Jul 14, 2024', status: 'Inactive', avatar: '👩‍🔬' },
 ]
 
 const AdminStudents = () => {
@@ -27,7 +27,7 @@ const AdminStudents = () => {
       <div className="admin-section-title">
         <div>
           <h2>Students</h2>
-          <p>Manage all enrolled students.</p>
+          <p>Manage all students.</p>
         </div>
         <div className="admin-stats-mini">
           <span>Total: <strong>{students.length}</strong></span>
@@ -68,7 +68,7 @@ const AdminStudents = () => {
                 {student.name}
               </span>
               <span className="student-email">{student.email}</span>
-              <span>{student.enrolled} courses</span>
+              <span>{student.courses} courses</span>
               <span>{student.joined}</span>
               <span>
                 <span className={`status-badge ${student.status === 'Active' ? 'active' : 'inactive'}`}>
@@ -102,7 +102,7 @@ const AdminStudents = () => {
               <div className="smc-meta">
                 <div className="smc-meta-item">
                   <span className="smc-meta-label">Courses</span>
-                  <span className="smc-meta-value">{student.enrolled}</span>
+                  <span className="smc-meta-value">{student.courses}</span>
                 </div>
                 <div className="smc-meta-item">
                   <span className="smc-meta-label">Joined</span>

@@ -77,7 +77,7 @@ const AdminAnalytics = () => {
           <div className="asc-left">
             <p className="asc-label">Free Courses</p>
             <h3 className="asc-value">{loading ? '…' : freeCourses.length}</h3>
-            <span className="asc-change">No cost to enroll</span>
+            <span className="asc-change">Free to access</span>
           </div>
           <div className="asc-icon" style={{ background: '#1D4ED820', color: '#1D4ED8' }}>🎁</div>
         </div>
