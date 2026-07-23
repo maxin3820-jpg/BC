@@ -58,4 +58,5 @@ export const mapPack = (p) => ({
   thumbnail: p.thumbnail,
   badge: p.badge,
   items: p.items || [],
+  isActive: p.is_active,
 })

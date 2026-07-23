@@ -12,6 +12,7 @@ const AdminPacks = () => {
   const [packs, setPacks] = useState([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
+  const [visibilityFilter, setVisibilityFilter] = useState('all')
   const [showModal, setShowModal] = useState(false)
   const [editingId, setEditingId] = useState(null)
   const [form, setForm] = useState(emptyForm)
@@ -36,6 +37,18 @@ const AdminPacks = () => {
     }
     load()
   }, [])
+
+  // ── Toggle visibility (hide/show) ─────────────────────────────────────────
+  const handleToggleVisibility = async (pack) => {
+    const newActive = !pack.isActive
+    try {
+      if (supabase) await supabase.from('packs').update({ is_active: newActive }).eq('id', pack.id)
+      setPacks(prev => prev.map(p => p.id === pack.id ? { ...p, isActive: newActive } : p))
+      showToast(newActive ? '✅ Pack is now Public' : '🙈 Pack is now Hidden')
+    } catch {
+      showToast('❌ Failed to update visibility')
+    }
+  }
 
   // ── Helpers ───────────────────────────────────────────────────────────────
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(''), 3000) }
@@ -73,7 +86,17 @@ const AdminPacks = () => {
     } finally { setImageUploading(false) }
   }
 
-  const filtered = packs.filter(p => p.title.toLowerCase().includes(search.toLowerCase()))
+  const filtered = packs.filter(p => {
+    const matchSearch = p.title.toLowerCase().includes(search.toLowerCase())
+    const matchVisibility =
+      visibilityFilter === 'all' ? true :
+      visibilityFilter === 'public' ? p.isActive !== false :
+      p.isActive === false
+    return matchSearch && matchVisibility
+  })
+
+  const publicCount = packs.filter(p => p.isActive !== false).length
+  const hiddenCount = packs.filter(p => p.isActive === false).length
 
   const openAdd = () => {
     setForm(emptyForm); setImagePreview(''); setImageUploading(false)
@@ -156,18 +179,28 @@ const AdminPacks = () => {
         <div className="admin-card-header">
           <input className="admin-search" type="text" placeholder="🔍 Search packs..."
             value={search} onChange={e => setSearch(e.target.value)} />
-          <span className="admin-count">{filtered.length} packs</span>
+          <div className="visibility-tabs">
+            <button className={`visibility-tab ${visibilityFilter === 'all' ? 'active' : ''}`} onClick={() => setVisibilityFilter('all')}>
+              All <span className="vtab-count">{packs.length}</span>
+            </button>
+            <button className={`visibility-tab public ${visibilityFilter === 'public' ? 'active' : ''}`} onClick={() => setVisibilityFilter('public')}>
+              🟢 Public <span className="vtab-count">{publicCount}</span>
+            </button>
+            <button className={`visibility-tab hidden ${visibilityFilter === 'hidden' ? 'active' : ''}`} onClick={() => setVisibilityFilter('hidden')}>
+              🔴 Hidden <span className="vtab-count">{hiddenCount}</span>
+            </button>
+          </div>
         </div>
 
         {/* Desktop table */}
         <div className="admin-table courses-desktop-table">
           <div className="admin-table-head">
-            <span>Pack</span><span>Price</span><span>Badge</span><span>Actions</span>
+            <span>Pack</span><span>Price</span><span>Status</span><span>Actions</span>
           </div>
           {filtered.map(pack => (
-            <div key={pack.id} className="admin-table-row">
+            <div key={pack.id} className={`admin-table-row ${pack.isActive === false ? 'row-hidden' : ''}`}>
               <span className="atc-course-cell">
-                <div className="atc-thumb">
+                <div className="atc-thumb" style={{ opacity: pack.isActive === false ? 0.5 : 1 }}>
                   {pack.thumbnail && (pack.thumbnail.startsWith('http') || pack.thumbnail.startsWith('data:'))
                     ? <img src={pack.thumbnail} alt={pack.title} />
                     : <div className="atc-thumb-gradient" style={{ background: pack.thumbnail || 'linear-gradient(135deg, #1E3A8A, #1D4ED8)' }} />}
@@ -176,6 +209,7 @@ const AdminPacks = () => {
                   <div className="atc-title">
                     {pack.badge === 'Bestseller' && <span className="mini-badge bestseller">⭐</span>}
                     {pack.badge === 'New' && <span className="mini-badge new-badge">New</span>}
+                    {pack.isActive === false && <span className="mini-badge" style={{ background: 'rgba(239,68,68,0.15)', color: '#EF4444' }}>Hidden</span>}
                     {pack.title}
                   </div>
                   {pack.items?.length > 0 && (
@@ -186,28 +220,39 @@ const AdminPacks = () => {
                 </div>
               </span>
               <span style={{ color: 'var(--adm-text)', fontWeight: 600 }}>PKR {pack.price}</span>
-              <span>
-                {pack.badge
-                  ? <span className={`mini-badge ${pack.badge === 'Bestseller' ? 'bestseller' : 'new-badge'}`}>{pack.badge}</span>
-                  : <span style={{ color: 'var(--adm-text3)', fontSize: '0.75rem' }}>—</span>}
+              <span style={{
+                color: pack.isActive === false ? '#EF4444' : 'var(--adm-accent)',
+                fontSize: '0.8rem', fontWeight: 600
+              }}>
+                {pack.isActive === false ? '● Hidden' : '● Public'}
               </span>
               <span className="admin-actions">
+                <button
+                  className="admin-btn-icon"
+                  title={pack.isActive === false ? 'Make Public' : 'Hide Pack'}
+                  onClick={() => handleToggleVisibility(pack)}
+                  style={{ fontSize: '1rem' }}
+                >
+                  {pack.isActive === false ? '👁' : '🙈'}
+                </button>
                 <button className="admin-btn-icon edit" onClick={() => openEdit(pack)}>✏️</button>
                 <button className="admin-btn-icon delete" onClick={() => setDeleteConfirm(pack.id)}>🗑</button>
               </span>
             </div>
           ))}
           {filtered.length === 0 && (
-            <p style={{ textAlign: 'center', color: 'var(--adm-text3)', padding: '2rem', fontSize: '0.875rem' }}>No packs found.</p>
+            <p style={{ textAlign: 'center', color: 'var(--adm-text3)', padding: '2rem', fontSize: '0.875rem' }}>
+              {visibilityFilter === 'hidden' ? 'No hidden packs.' : visibilityFilter === 'public' ? 'No public packs.' : 'No packs found.'}
+            </p>
           )}
         </div>
 
         {/* Mobile cards */}
         <div className="courses-mobile-cards">
           {filtered.map(pack => (
-            <div key={pack.id} className="course-mobile-card">
+            <div key={pack.id} className={`course-mobile-card ${pack.isActive === false ? 'card-hidden' : ''}`}>
               <div className="cmc-header">
-                <div className="cmc-thumb">
+                <div className="cmc-thumb" style={{ opacity: pack.isActive === false ? 0.5 : 1 }}>
                   {pack.thumbnail && (pack.thumbnail.startsWith('http') || pack.thumbnail.startsWith('data:'))
                     ? <img src={pack.thumbnail} alt={pack.title} />
                     : <div className="cmc-thumb-bg" style={{ background: pack.thumbnail || 'linear-gradient(135deg, #1E3A8A, #1D4ED8)' }} />}
@@ -216,6 +261,7 @@ const AdminPacks = () => {
                   <div className="cmc-badges">
                     {pack.badge === 'Bestseller' && <span className="mini-badge bestseller">⭐ Best</span>}
                     {pack.badge === 'New' && <span className="mini-badge new-badge">New</span>}
+                    {pack.isActive === false && <span className="mini-badge" style={{ background: 'rgba(239,68,68,0.15)', color: '#EF4444' }}>Hidden</span>}
                   </div>
                   <div className="cmc-title">{pack.title}</div>
                 </div>
@@ -231,14 +277,20 @@ const AdminPacks = () => {
                     <span className="cmc-meta-value" style={{ textDecoration: 'line-through', color: 'var(--adm-text3)' }}>PKR {pack.originalPrice}</span>
                   </div>
                 )}
-                {pack.items?.length > 0 && (
-                  <div className="cmc-meta-item">
-                    <span className="cmc-meta-label">Items</span>
-                    <span className="cmc-meta-value">{pack.items.length} included</span>
-                  </div>
-                )}
+                <div className="cmc-meta-item">
+                  <span className="cmc-meta-label">Status</span>
+                  <span className="cmc-meta-value" style={{ color: pack.isActive === false ? '#EF4444' : '#22C55E', fontWeight: 600 }}>
+                    {pack.isActive === false ? 'Hidden' : 'Public'}
+                  </span>
+                </div>
               </div>
               <div className="cmc-actions">
+                <button
+                  className={`cmc-btn ${pack.isActive === false ? 'cmc-btn-show' : 'cmc-btn-hide'}`}
+                  onClick={() => handleToggleVisibility(pack)}
+                >
+                  {pack.isActive === false ? '👁 Show' : '🙈 Hide'}
+                </button>
                 <button className="cmc-btn cmc-btn-edit" onClick={() => openEdit(pack)}>✏️ Edit</button>
                 <button className="cmc-btn cmc-btn-delete" onClick={() => setDeleteConfirm(pack.id)}>🗑 Delete</button>
               </div>
