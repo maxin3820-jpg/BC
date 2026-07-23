@@ -1,11 +1,76 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { supabase } from '../../lib/supabase'
 import { courses as localCourses } from '../../data/courses'
 import { packs as localPacks } from '../../data/packs'
 import { mapCourse } from '../../hooks/useCourses'
 import { mapPack } from '../../hooks/usePacks'
 
-const ReorderList = ({ items, onMoveUp, onMoveDown, onSave, saving, type }) => {
+const DragList = ({ items, setItems, onSave, saving, type }) => {
+  const dragItem = useRef(null)
+  const dragOverItem = useRef(null)
+  const [draggingIdx, setDraggingIdx] = useState(null)
+  const [overIdx, setOverIdx] = useState(null)
+
+  const handleDragStart = (i) => {
+    dragItem.current = i
+    setDraggingIdx(i)
+  }
+
+  const handleDragEnter = (i) => {
+    dragOverItem.current = i
+    setOverIdx(i)
+  }
+
+  const handleDragEnd = () => {
+    const from = dragItem.current
+    const to = dragOverItem.current
+    if (from !== null && to !== null && from !== to) {
+      const next = [...items]
+      const dragged = next.splice(from, 1)[0]
+      next.splice(to, 0, dragged)
+      setItems(next)
+    }
+    dragItem.current = null
+    dragOverItem.current = null
+    setDraggingIdx(null)
+    setOverIdx(null)
+  }
+
+  const handleDragOver = (e) => {
+    e.preventDefault() // allow drop
+  }
+
+  // Touch support
+  const touchStartY = useRef(null)
+  const touchStartIdx = useRef(null)
+
+  const handleTouchStart = (e, i) => {
+    touchStartY.current = e.touches[0].clientY
+    touchStartIdx.current = i
+    setDraggingIdx(i)
+  }
+
+  const handleTouchMove = (e) => {
+    e.preventDefault()
+    const y = e.touches[0].clientY
+    const elements = document.querySelectorAll('.reorder-item')
+    let targetIdx = null
+    elements.forEach((el, idx) => {
+      const rect = el.getBoundingClientRect()
+      if (y >= rect.top && y <= rect.bottom) targetIdx = idx
+    })
+    if (targetIdx !== null) {
+      dragOverItem.current = targetIdx
+      setOverIdx(targetIdx)
+    }
+  }
+
+  const handleTouchEnd = () => {
+    handleDragEnd()
+    touchStartY.current = null
+    touchStartIdx.current = null
+  }
+
   if (items.length === 0) {
     return (
       <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--adm-text3)', fontSize: '0.875rem' }}>
@@ -16,8 +81,37 @@ const ReorderList = ({ items, onMoveUp, onMoveDown, onSave, saving, type }) => {
 
   return (
     <div className="reorder-list">
+      <div className="reorder-hint">
+        <span>☰</span> Drag to reorder — click Save when done
+      </div>
+
       {items.map((item, i) => (
-        <div key={item.id} className={`reorder-item ${item.isActive === false ? 'reorder-hidden' : ''}`}>
+        <div
+          key={item.id}
+          className={`reorder-item
+            ${item.isActive === false ? 'reorder-hidden' : ''}
+            ${draggingIdx === i ? 'reorder-dragging' : ''}
+            ${overIdx === i && draggingIdx !== i ? 'reorder-over' : ''}
+          `}
+          draggable
+          onDragStart={() => handleDragStart(i)}
+          onDragEnter={() => handleDragEnter(i)}
+          onDragEnd={handleDragEnd}
+          onDragOver={handleDragOver}
+          onTouchStart={(e) => handleTouchStart(e, i)}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
+          {/* Drag handle */}
+          <div className="reorder-handle" title="Drag to reorder">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+
           {/* Position number */}
           <div className="reorder-pos">{i + 1}</div>
 
@@ -43,34 +137,12 @@ const ReorderList = ({ items, onMoveUp, onMoveDown, onSave, saving, type }) => {
               {item.isFree ? 'Free' : `PKR ${item.price}`}
             </div>
           </div>
-
-          {/* Move buttons */}
-          <div className="reorder-btns">
-            <button
-              className="reorder-btn"
-              onClick={() => onMoveUp(i)}
-              disabled={i === 0}
-              title="Move Up"
-              aria-label="Move up"
-            >
-              ▲
-            </button>
-            <button
-              className="reorder-btn"
-              onClick={() => onMoveDown(i)}
-              disabled={i === items.length - 1}
-              title="Move Down"
-              aria-label="Move down"
-            >
-              ▼
-            </button>
-          </div>
         </div>
       ))}
 
       <div className="reorder-save-bar">
         <p style={{ fontSize: '0.8rem', color: 'var(--adm-text3)' }}>
-          ↑ ↓ to reorder — click Save when done
+          {items.length} {type} — drag to reorder, save when done
         </p>
         <button className="admin-btn-primary" onClick={onSave} disabled={saving}>
           {saving ? 'Saving...' : '💾 Save Order'}
@@ -121,30 +193,13 @@ const AdminReorder = () => {
     load()
   }, [])
 
-  // ── Move helpers ──────────────────────────────────────────────────────────
-  const moveUp = (list, setList, i) => {
-    if (i === 0) return
-    const next = [...list]
-    ;[next[i - 1], next[i]] = [next[i], next[i - 1]]
-    setList(next)
-  }
-
-  const moveDown = (list, setList, i) => {
-    if (i === list.length - 1) return
-    const next = [...list]
-    ;[next[i], next[i + 1]] = [next[i + 1], next[i]]
-    setList(next)
-  }
-
-  // ── Save order to Supabase ────────────────────────────────────────────────
   const saveCourseOrder = async () => {
     setSavingCourses(true)
     try {
       if (supabase) {
-        const updates = courses.map((c, i) =>
+        await Promise.all(courses.map((c, i) =>
           supabase.from('courses').update({ sort_order: i + 1 }).eq('id', c.id)
-        )
-        await Promise.all(updates)
+        ))
         showToast('✅ Course order saved! Website updated instantly.')
       } else {
         showToast('✅ Order saved locally (Supabase not connected)')
@@ -160,10 +215,9 @@ const AdminReorder = () => {
     setSavingPacks(true)
     try {
       if (supabase) {
-        const updates = packs.map((p, i) =>
+        await Promise.all(packs.map((p, i) =>
           supabase.from('packs').update({ sort_order: i + 1 }).eq('id', p.id)
-        )
-        await Promise.all(updates)
+        ))
         showToast('✅ Pack order saved! Website updated instantly.')
       } else {
         showToast('✅ Order saved locally (Supabase not connected)')
@@ -184,7 +238,7 @@ const AdminReorder = () => {
       <div className="admin-section-title">
         <div>
           <h2>Reorder</h2>
-          <p>Control the display order of courses and packs on your website.</p>
+          <p>Drag and drop to control the order courses and packs appear on your website.</p>
         </div>
       </div>
 
@@ -216,10 +270,9 @@ const AdminReorder = () => {
               </p>
             </div>
           </div>
-          <ReorderList
+          <DragList
             items={courses}
-            onMoveUp={(i) => moveUp(courses, setCourses, i)}
-            onMoveDown={(i) => moveDown(courses, setCourses, i)}
+            setItems={setCourses}
             onSave={saveCourseOrder}
             saving={savingCourses}
             type="courses"
@@ -237,10 +290,9 @@ const AdminReorder = () => {
               </p>
             </div>
           </div>
-          <ReorderList
+          <DragList
             items={packs}
-            onMoveUp={(i) => moveUp(packs, setPacks, i)}
-            onMoveDown={(i) => moveDown(packs, setPacks, i)}
+            setItems={setPacks}
             onSave={savePackOrder}
             saving={savingPacks}
             type="packs"
