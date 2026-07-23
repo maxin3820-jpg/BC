@@ -52,11 +52,6 @@ const Navbar = () => {
           <NavLink to="/contact">Contact</NavLink>
         </nav>
 
-        {/* Desktop CTA */}
-        <div className="navbar-cta">
-          <Link to="/courses" className="btn btn-primary btn-sm">Browse Courses</Link>
-        </div>
-
         {/* Mobile 3-dot button */}
         <div className="mobile-menu-wrap" ref={menuRef}>
           <button
