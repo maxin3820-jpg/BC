@@ -165,20 +165,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ===== CTA BANNER ===== */}
-      <section className="cta-banner">
-        <div className="container">
-          <div className="cta-content">
-            <h2>Ready to start your learning journey?</h2>
-            <p>Join thousands of learners already building their dream careers.</p>
-            <div className="cta-actions">
-              <Link to="/courses" className="btn btn-primary btn-lg">Browse All Courses</Link>
-              <Link to="/contact" className="btn btn-secondary btn-lg">Talk to Us</Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
     </div>
   )
 }
