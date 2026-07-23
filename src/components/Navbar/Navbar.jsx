@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
+import { useSettings } from '../../context/SettingsContext'
 import './Navbar.css'
 
 const Navbar = () => {
@@ -7,6 +8,9 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false)
   const location = useLocation()
   const menuRef = useRef(null)
+  const { settings } = useSettings()
+
+  const hasAnnouncement = settings.announcement_active === 'true' && settings.announcement_text?.trim()
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20)
@@ -34,7 +38,7 @@ const Navbar = () => {
   }, [menuOpen])
 
   return (
-    <header className={`navbar ${scrolled ? 'scrolled' : ''}`}>
+    <header className={`navbar ${scrolled ? 'scrolled' : ''} ${hasAnnouncement ? 'with-announcement' : ''}`}>
       <div className="container navbar-inner">
 
         {/* Logo */}

@@ -3,6 +3,7 @@ import { Routes, Route, useLocation, Navigate } from 'react-router-dom'
 import ScrollToTop from './components/ScrollToTop'
 import Navbar from './components/Navbar/Navbar'
 import Footer from './components/Footer/Footer'
+import AnnouncementBanner from './components/AnnouncementBanner/AnnouncementBanner'
 import Home from './pages/Home'
 import Courses from './pages/Courses'
 import FreeCourses from './pages/FreeCourses'
@@ -18,6 +19,8 @@ import AdminStudents from './pages/Admin/AdminStudents'
 import AdminMessages from './pages/Admin/AdminMessages'
 import AdminAnalytics from './pages/Admin/AdminAnalytics'
 import AdminSettings from './pages/Admin/AdminSettings'
+import AdminFAQs from './pages/Admin/AdminFAQs'
+import AdminTemplates from './pages/Admin/AdminTemplates'
 
 // Wraps admin child routes — redirects to login if not authenticated
 const RequireAdmin = ({ isAdmin, children }) => {
@@ -36,6 +39,7 @@ function App() {
   return (
     <div className="app">
       <ScrollToTop />
+      {!isAdminRoute && <AnnouncementBanner />}
       {!isAdminRoute && <Navbar />}
       <main className={isAdminRoute ? '' : 'main-content'}>
         <Routes>
@@ -69,6 +73,8 @@ function App() {
             <Route path="messages" element={<AdminMessages />} />
             <Route path="analytics" element={<AdminAnalytics />} />
             <Route path="settings" element={<AdminSettings />} />
+            <Route path="faqs" element={<AdminFAQs />} />
+            <Route path="templates" element={<AdminTemplates />} />
           </Route>
 
           <Route path="*" element={<NotFound />} />

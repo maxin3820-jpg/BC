@@ -14,22 +14,22 @@
   --accent: #2DC49A;
 
   /* Neutrals — dim deep whites */
-  --bg: #D8D8E2;
-  --bg-card: #DCDCE6;
-  --bg-surface: #D0D0DC;
-  --bg-hover: #C8C8D6;
-  --border: #B4B4C8;
-  --border-light: #A8A8BF;
+  --bg: #EAEAF0;
+  --bg-card: #F0F0F6;
+  --bg-surface: #E4E4EC;
+  --bg-hover: #DCDCE8;
+  --border: #C8C8D8;
+  --border-light: #B8B8CC;
 
   /* Text */
-  --text-primary: #16162A;
-  --text-secondary: #3A3A52;
-  --text-muted: #60607A;
+  --text-primary: #1A1A2E;
+  --text-secondary: #44445A;
+  --text-muted: #70708A;
 
   /* Gradients */
   --grad-primary: linear-gradient(135deg, #1E3A8A 0%, #1D4ED8 100%);
-  --grad-card: linear-gradient(145deg, #DCDCE6 0%, #D0D0DC 100%);
-  --grad-hero: linear-gradient(135deg, #D8D8E2 0%, #D0D0DC 50%, #C8C8D6 100%);
+  --grad-card: linear-gradient(145deg, #F0F0F6 0%, #E4E4EC 100%);
+  --grad-hero: linear-gradient(135deg, #EAEAF0 0%, #E4E4EC 50%, #DCDCE8 100%);
 
   /* Shadows */
   --shadow-sm: 0 2px 8px rgba(30,58,138,0.08);

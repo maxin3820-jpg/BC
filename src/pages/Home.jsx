@@ -32,15 +32,16 @@ const Home = () => {
         </div>
         <div className="container hero-content">
           <div className="hero-badge">
-            <span className="badge badge-primary">🚀 New courses added weekly</span>
+            <span className="badge badge-primary">{settings.hero_badge || '🚀 New courses added weekly'}</span>
           </div>
           <h1 className="hero-title">
-            Affordable Courses That
-            <br />
-            <span className="gradient-text">Change Careers</span>
+            {settings.hero_headline
+              ? <>{settings.hero_headline.split(' ').slice(0, -2).join(' ')}<br /><span className="gradient-text">{settings.hero_headline.split(' ').slice(-2).join(' ')}</span></>
+              : <>Affordable Courses That<br /><span className="gradient-text">Change Careers</span></>
+            }
           </h1>
           <p className="hero-subtitle">
-            Premium courses, bundles, packs and PDFs — handpicked and priced so anyone can start. Buy directly via WhatsApp, get lifetime access.
+            {settings.hero_subtext || 'Premium courses, bundles, packs and PDFs — handpicked and priced so anyone can start. Buy directly via WhatsApp, get lifetime access.'}
           </p>
           <div className="hero-actions">
             <Link to="/courses" className="btn btn-primary btn-lg">Explore Courses →</Link>

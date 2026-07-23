@@ -11,6 +11,11 @@ const defaultSite = {
   youtube: 'https://youtube.com',
   linkedin: 'https://linkedin.com',
   instagram: 'https://instagram.com',
+  announcement_text: '',
+  announcement_active: 'false',
+  hero_headline: '',
+  hero_subtext: '',
+  hero_badge: '',
 }
 
 const AdminSettings = () => {
@@ -198,6 +203,92 @@ const AdminSettings = () => {
           <button className="admin-btn-primary" style={{ marginTop: '1rem' }} onClick={() => showToast('✅ Notifications saved!')}>
             Save Preferences
           </button>
+        </div>
+
+        {/* Announcement Banner */}
+        <div className="admin-card">
+          <div className="admin-card-header"><h3>📢 Announcement Banner</h3></div>
+          <form onSubmit={async (e) => {
+            e.preventDefault()
+            await upsertSettings({
+              announcement_text: site.announcement_text,
+              announcement_active: site.announcement_active,
+            })
+            showToast('✅ Announcement saved!')
+          }}>
+            <div className="admin-form-group">
+              <label>Banner Message</label>
+              <input
+                value={site.announcement_text || ''}
+                onChange={e => setSite(p => ({ ...p, announcement_text: e.target.value }))}
+                placeholder="e.g. 🔥 Ramadan Sale — 50% off all courses!"
+              />
+            </div>
+            <div className="notif-row" style={{ marginTop: '1rem' }}>
+              <div>
+                <strong>Show Banner</strong>
+                <p>Display this banner on the public website</p>
+              </div>
+              <label className="toggle-label">
+                <input
+                  type="checkbox"
+                  checked={site.announcement_active === 'true'}
+                  onChange={e => setSite(p => ({ ...p, announcement_active: e.target.checked ? 'true' : 'false' }))}
+                />
+                <span className="toggle"></span>
+              </label>
+            </div>
+            {site.announcement_active === 'true' && site.announcement_text && (
+              <div style={{ marginTop: '1rem', padding: '0.75rem 1rem', background: 'linear-gradient(135deg, #1E3A8A, #1D4ED8)', borderRadius: 'var(--adm-radius)', color: '#fff', fontSize: '0.875rem', textAlign: 'center' }}>
+                📢 {site.announcement_text}
+              </div>
+            )}
+            <button type="submit" className="admin-btn-primary" style={{ marginTop: '1rem' }}>Save Banner</button>
+          </form>
+        </div>
+
+        {/* Hero Section Editor */}
+        <div className="admin-card">
+          <div className="admin-card-header"><h3>🏠 Hero Section Editor</h3></div>
+          <form onSubmit={async (e) => {
+            e.preventDefault()
+            await upsertSettings({
+              hero_badge: site.hero_badge,
+              hero_headline: site.hero_headline,
+              hero_subtext: site.hero_subtext,
+            })
+            showToast('✅ Hero section saved!')
+          }}>
+            <div className="admin-form-group">
+              <label>Badge Text</label>
+              <input
+                value={site.hero_badge || ''}
+                onChange={e => setSite(p => ({ ...p, hero_badge: e.target.value }))}
+                placeholder="e.g. 🚀 New courses added weekly"
+              />
+            </div>
+            <div className="admin-form-group">
+              <label>Main Headline</label>
+              <input
+                value={site.hero_headline || ''}
+                onChange={e => setSite(p => ({ ...p, hero_headline: e.target.value }))}
+                placeholder="e.g. Affordable Courses That Change Careers"
+              />
+            </div>
+            <div className="admin-form-group">
+              <label>Sub Text</label>
+              <textarea
+                rows={3}
+                value={site.hero_subtext || ''}
+                onChange={e => setSite(p => ({ ...p, hero_subtext: e.target.value }))}
+                placeholder="e.g. Premium courses, bundles, packs and PDFs..."
+              />
+            </div>
+            <p style={{ fontSize: '0.75rem', color: 'var(--adm-text3)', marginBottom: '0.75rem' }}>
+              Leave blank to use the default text from code.
+            </p>
+            <button type="submit" className="admin-btn-primary">Save Hero</button>
+          </form>
         </div>
       </div>
     </div>

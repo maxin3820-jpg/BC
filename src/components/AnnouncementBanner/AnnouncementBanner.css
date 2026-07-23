@@ -1,0 +1,37 @@
+.announcement-banner {
+  width: 100%;
+  background: linear-gradient(135deg, #1E3A8A 0%, #1D4ED8 100%);
+  color: #fff;
+  padding: 0.625rem 1rem;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1001;
+  text-align: center;
+}
+
+.announcement-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.announcement-icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.announcement-text {
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+@media (max-width: 480px) {
+  .announcement-banner { padding: 0.5rem 0.875rem; }
+  .announcement-text { font-size: 0.8rem; }
+}
