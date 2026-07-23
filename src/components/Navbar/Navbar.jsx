@@ -72,6 +72,9 @@ const Navbar = () => {
           {/* Dropdown popover */}
           <div className={`mobile-dropdown ${menuOpen ? 'open' : ''}`} role="menu">
             <div className="mobile-dropdown-inner">
+              <NavLink to="/" end onClick={() => setMenuOpen(false)}>
+                <span className="md-icon">🏠</span> Home
+              </NavLink>
               <NavLink to="/courses" onClick={() => setMenuOpen(false)}>
                 <span className="md-icon">📚</span> All Courses
               </NavLink>
