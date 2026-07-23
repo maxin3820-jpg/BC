@@ -3,20 +3,11 @@ import { supabase } from '../lib/supabase'
 import { useSettings } from '../context/SettingsContext'
 import './Contact.css'
 
-const faqs = [
-  { q: 'How do I buy a course?', a: 'Click "Buy on WhatsApp" on any course card and send us a message. We will guide you through the purchase process.' },
-  { q: 'Can I access courses on mobile?', a: 'Absolutely. Birsil Courses is fully responsive and works on any device — phone, tablet, or desktop.' },
-  { q: 'What is the refund policy?', a: 'We do not offer refunds. However, if you face any issues with our products, we will fix them for you — just reach out to us on WhatsApp.' },
-  { q: 'How long do I have access to a course?', a: 'You get lifetime access to any course you purchase, including all future updates.' },
-  { q: 'How do I pay for a course?', a: 'We accept JazzCash, Easypaisa, and Crypto. Contact us on WhatsApp and we\'ll guide you through the payment.' },
-]
-
 const Contact = () => {
   const { settings } = useSettings()
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' })
   const [sent, setSent] = useState(false)
   const [submitting, setSubmitting] = useState(false)
-  const [openFaq, setOpenFaq] = useState(null)
   const [errors, setErrors] = useState({})
 
   const validate = () => {
@@ -52,7 +43,6 @@ const Contact = () => {
       setSent(true)
     } catch (err) {
       console.error('Contact submit error:', err.message)
-      // Still show success to user — don't block on Supabase issues
       setSent(true)
     } finally {
       setSubmitting(false)
@@ -179,27 +169,6 @@ const Contact = () => {
           )}
         </div>
       </div>
-
-      {/* FAQ */}
-      <section className="section faq-section">
-        <div className="container">
-          <div className="section-header">
-            <h2 className="section-title">Frequently Asked <span className="gradient-text">Questions</span></h2>
-            <p className="section-subtitle">Quick answers to common questions.</p>
-          </div>
-          <div className="faq-list">
-            {faqs.map((faq, i) => (
-              <div key={i} className={`faq-item ${openFaq === i ? 'open' : ''}`}>
-                <button className="faq-question" onClick={() => setOpenFaq(openFaq === i ? null : i)} aria-expanded={openFaq === i}>
-                  <span>{faq.q}</span>
-                  <span className="faq-chevron">{openFaq === i ? '−' : '+'}</span>
-                </button>
-                {openFaq === i && <div className="faq-answer"><p>{faq.a}</p></div>}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
     </div>
   )
 }
