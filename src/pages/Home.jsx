@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import CourseCard from '../components/CourseCard/CourseCard'
 import { SkeletonGrid } from '../components/Skeleton/Skeleton'
@@ -7,10 +7,20 @@ import { usePacks } from '../hooks/usePacks'
 import { useSettings } from '../context/SettingsContext'
 import './Home.css'
 
+const faqs = [
+  { q: 'How do I buy a course?', a: 'Click "Buy on WhatsApp" on any course card and send us a message. We\'ll guide you through the purchase instantly.' },
+  { q: 'What do I get after buying?', a: 'You get lifetime access to the course materials — no expiry, no subscriptions. Yours forever.' },
+  { q: 'How do I pay?', a: 'We accept multiple payment methods. Contact us on WhatsApp and we\'ll share the available options.' },
+  { q: 'Can I access on mobile?', a: 'Yes. Everything works on phone, tablet and desktop. No app needed.' },
+  { q: 'Is there a refund policy?', a: 'We offer a 30-day money-back guarantee on all paid courses, no questions asked.' },
+  { q: 'What are Digital Packs?', a: 'Packs are bundles of premium digital products — templates, design kits, code snippets and more. Buy once, use forever.' },
+]
+
 const Home = () => {
   const { courses, loading: coursesLoading } = useCourses()
   const { packs, loading: packsLoading } = usePacks()
   const { settings } = useSettings()
+  const [openFaq, setOpenFaq] = useState(null)
   return (
     <div className="home">
 
@@ -122,6 +132,35 @@ const Home = () => {
           </div>
           <div className="section-cta">
             <Link to="/packs" className="btn btn-outline">View All Packs →</Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== FAQ ===== */}
+      <section className="section faq-home-section">
+        <div className="container">
+          <div className="section-header">
+            <h2 className="section-title">Frequently Asked <span className="gradient-text">Questions</span></h2>
+            <p className="section-subtitle">Everything you need to know before getting started.</p>
+          </div>
+          <div className="faq-home-list">
+            {faqs.map((faq, i) => (
+              <div key={i} className={`faq-home-item ${openFaq === i ? 'open' : ''}`}>
+                <button
+                  className="faq-home-question"
+                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                  aria-expanded={openFaq === i}
+                >
+                  <span>{faq.q}</span>
+                  <span className="faq-home-chevron">{openFaq === i ? '−' : '+'}</span>
+                </button>
+                {openFaq === i && (
+                  <div className="faq-home-answer">
+                    <p>{faq.a}</p>
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         </div>
       </section>
