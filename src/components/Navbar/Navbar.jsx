@@ -47,6 +47,7 @@ const Navbar = () => {
         <nav className="navbar-links">
           <NavLink to="/" end>Home</NavLink>
           <NavLink to="/courses">Courses</NavLink>
+          <NavLink to="/free-courses">Free Courses</NavLink>
           <NavLink to="/packs">Packs</NavLink>
           <NavLink to="/contact">Contact</NavLink>
         </nav>
@@ -77,6 +78,9 @@ const Navbar = () => {
               </NavLink>
               <NavLink to="/courses" onClick={() => setMenuOpen(false)}>
                 <span className="md-icon">📚</span> All Courses
+              </NavLink>
+              <NavLink to="/free-courses" onClick={() => setMenuOpen(false)}>
+                <span className="md-icon">🎁</span> Free Courses
               </NavLink>
               <NavLink to="/packs" onClick={() => setMenuOpen(false)}>
                 <span className="md-icon">📦</span> Digital Packs

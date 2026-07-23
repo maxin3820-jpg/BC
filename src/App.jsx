@@ -5,6 +5,7 @@ import Navbar from './components/Navbar/Navbar'
 import Footer from './components/Footer/Footer'
 import Home from './pages/Home'
 import Courses from './pages/Courses'
+import FreeCourses from './pages/FreeCourses'
 import Packs from './pages/Packs'
 import Contact from './pages/Contact'
 import NotFound from './pages/NotFound'
@@ -41,6 +42,7 @@ function App() {
           {/* Public routes */}
           <Route path="/" element={<Home />} />
           <Route path="/courses" element={<Courses />} />
+          <Route path="/free-courses" element={<FreeCourses />} />
           <Route path="/packs" element={<Packs />} />
           <Route path="/contact" element={<Contact />} />
 
