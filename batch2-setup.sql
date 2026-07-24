@@ -61,7 +61,9 @@ INSERT INTO public.reply_templates (title, message, sort_order) VALUES
   ('Support Response', 'Hi! We are sorry to hear you are having an issue. Please describe the problem in detail and we will fix it for you as soon as possible.', 4)
 ON CONFLICT DO NOTHING;
 
--- ── 3. Message Labels (add column to messages) ────────────────
+-- ── Add is_free column to packs table ───────────────────────
+ALTER TABLE public.packs
+  ADD COLUMN IF NOT EXISTS is_free BOOLEAN NOT NULL DEFAULT false;
 ALTER TABLE public.messages
   ADD COLUMN IF NOT EXISTS label TEXT DEFAULT NULL;
 -- Labels: 'Interested' | 'Purchased' | 'Support' | 'Spam' | NULL
@@ -76,3 +78,10 @@ ON CONFLICT (key) DO NOTHING;
 -- DONE ✓
 -- After running this SQL, redeploy your site.
 -- ============================================================
+
+-- ============================================================
+-- ADD is_free TO PACKS TABLE
+-- Run this if you already ran the original batch2-setup.sql
+-- ============================================================
+ALTER TABLE public.packs
+  ADD COLUMN IF NOT EXISTS is_free BOOLEAN NOT NULL DEFAULT false;

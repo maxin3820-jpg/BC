@@ -84,7 +84,7 @@ const Home = () => {
             {coursesLoading
               ? <SkeletonGrid count={6} />
               : filteredCourses.length > 0
-                ? filteredCourses.map(course => <CourseCard key={course.id} course={course} whatsappNumber={settings.whatsapp} />)
+                ? filteredCourses.slice(0, 6).map(course => <CourseCard key={course.id} course={course} whatsappNumber={settings.whatsapp} />)
                 : <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '3rem', color: 'var(--text-secondary)' }}>
                     <div style={{ fontSize: '2rem', marginBottom: '0.75rem' }}>🔍</div>
                     <p>No courses found for "<strong>{courseSearch}</strong>"</p>
@@ -110,7 +110,7 @@ const Home = () => {
           <div className="courses-grid">
             {packsLoading
               ? <SkeletonGrid count={3} />
-              : packs.map(pack => {
+              : packs.slice(0, 3).map(pack => {
               const whatsappNumber = (settings.whatsapp || '923036326202').replace(/\D/g, '')
               const symbol = 'PKR '
               const discount = pack.originalPrice ? Math.round((1 - pack.price / pack.originalPrice) * 100) : null
@@ -121,7 +121,15 @@ const Home = () => {
                 <div key={pack.id} className="course-card">
                   <div className="card-thumb">
                     {isImage ? (
-                      <img src={pack.thumbnail} alt={pack.title} className="card-thumb-img" />
+                      <img 
+                        src={pack.thumbnail} 
+                        alt={pack.title} 
+                        className="card-thumb-img" 
+                        loading="lazy"
+                        decoding="async"
+                        width="400" 
+                        height="190"
+                      />
                     ) : (
                       <div className="card-thumb-bg" style={{ background: pack.thumbnail }} />
                     )}

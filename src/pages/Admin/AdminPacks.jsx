@@ -5,7 +5,7 @@ import { mapPack } from '../../hooks/usePacks'
 
 const emptyForm = {
   title: '', description: '', price: '', originalPrice: '',
-  thumbnail: '', badge: '', items: '', isBestseller: false, isNew: false,
+  thumbnail: '', badge: '', items: '', isBestseller: false, isNew: false, isFree: false,
 }
 
 const AdminPacks = () => {
@@ -25,14 +25,32 @@ const AdminPacks = () => {
   // ── Load from Supabase on mount ───────────────────────────────────────────
   useEffect(() => {
     const load = async () => {
-      if (!supabase) { setPacks(localPacks); setLoading(false); return }
+      if (!supabase) { 
+        console.log('⚠️ No Supabase connection - using local packs')
+        setPacks(localPacks); 
+        setLoading(false); 
+        return 
+      }
       try {
         const { data, error } = await supabase
           .from('packs')
           .select('*')
           .order('sort_order', { ascending: true })
+        
+        if (error) {
+          console.error('❌ Supabase error:', error)
+        }
+        
+        if (data) {
+          console.log('✅ Loaded packs from Supabase:', data.length)
+          console.log('📦 Raw pack data:', data.map(p => ({ title: p.title, is_free: p.is_free })))
+        }
+        
         setPacks(!error && data?.length ? data.map(mapPack) : localPacks)
-      } catch { setPacks(localPacks) }
+      } catch (err) { 
+        console.error('❌ Load error:', err)
+        setPacks(localPacks) 
+      }
       finally { setLoading(false) }
     }
     load()
@@ -107,6 +125,7 @@ const AdminPacks = () => {
   }
 
   const openEdit = (pack) => {
+    console.log('🔍 Opening pack for edit:', pack.title, 'isFree:', pack.isFree)
     setForm({
       ...pack,
       price: pack.price?.toString() || '',
@@ -115,6 +134,7 @@ const AdminPacks = () => {
       badge: pack.badge || '',
       isBestseller: pack.badge === 'Bestseller',
       isNew: pack.badge === 'New',
+      isFree: pack.isFree || false,
     })
     setImagePreview(pack.thumbnail?.startsWith('http') || pack.thumbnail?.startsWith('data:') ? pack.thumbnail : '')
     setImageUploading(false); setEditingId(pack.id); setShowModal(true)
@@ -134,21 +154,54 @@ const AdminPacks = () => {
       badge,
       items: itemsArray,
       is_active: true,
+      is_free: form.isFree,
     }
+    console.log('💾 Saving pack with payload:', payload)
+    console.log('✅ is_free value:', payload.is_free)
     try {
       if (editingId) {
         if (supabase) {
-          const { data } = await supabase.from('packs').update(payload).eq('id', editingId).select().single()
-          if (data) { setPacks(prev => prev.map(p => p.id === editingId ? mapPack(data) : p)); showToast('✅ Pack updated!'); setShowModal(false); return }
+          const { data, error } = await supabase.from('packs').update(payload).eq('id', editingId).select().single()
+          if (error) console.error('❌ Update error:', error)
+          if (data) { 
+            console.log('✅ Updated pack from DB:', data)
+            setPacks(prev => prev.map(p => p.id === editingId ? mapPack(data) : p))
+            showToast('✅ Pack updated!')
+            setShowModal(false)
+            return 
+          }
         }
-        setPacks(prev => prev.map(p => p.id === editingId ? { ...p, ...payload, id: editingId, originalPrice: payload.original_price, items: itemsArray, badge } : p))
+        // Fallback: local update
+        setPacks(prev => prev.map(p => p.id === editingId ? { 
+          ...p, 
+          ...payload, 
+          id: editingId, 
+          originalPrice: payload.original_price, 
+          items: itemsArray, 
+          badge,
+          isFree: payload.is_free 
+        } : p))
         showToast('✅ Pack updated!')
       } else {
         if (supabase) {
-          const { data } = await supabase.from('packs').insert([payload]).select().single()
-          if (data) { setPacks(prev => [mapPack(data), ...prev]); showToast('✅ Pack added!'); setShowModal(false); return }
+          const { data, error } = await supabase.from('packs').insert([payload]).select().single()
+          if (error) console.error('❌ Insert error:', error)
+          if (data) { 
+            console.log('✅ Created pack from DB:', data)
+            setPacks(prev => [mapPack(data), ...prev])
+            showToast('✅ Pack added!')
+            setShowModal(false)
+            return 
+          }
         }
-        setPacks(prev => [{ ...payload, id: Date.now(), originalPrice: payload.original_price, items: itemsArray }, ...prev])
+        // Fallback: local insert
+        setPacks(prev => [{
+          ...payload, 
+          id: Date.now(), 
+          originalPrice: payload.original_price, 
+          items: itemsArray,
+          isFree: payload.is_free
+        }, ...prev])
         showToast('✅ Pack added!')
       }
     } catch {
@@ -212,6 +265,7 @@ const AdminPacks = () => {
                   <div className="atc-title">
                     {pack.badge === 'Bestseller' && <span className="mini-badge bestseller">⭐</span>}
                     {pack.badge === 'New' && <span className="mini-badge new-badge">New</span>}
+                    {pack.isFree && <span className="mini-badge" style={{ background: 'rgba(34,197,94,0.15)', color: '#22C55E' }}>🎁 Free</span>}
                     {pack.isActive === false && <span className="mini-badge" style={{ background: 'rgba(239,68,68,0.15)', color: '#EF4444' }}>Hidden</span>}
                     {pack.title}
                   </div>
@@ -264,6 +318,7 @@ const AdminPacks = () => {
                   <div className="cmc-badges">
                     {pack.badge === 'Bestseller' && <span className="mini-badge bestseller">⭐ Best</span>}
                     {pack.badge === 'New' && <span className="mini-badge new-badge">New</span>}
+                    {pack.isFree && <span className="mini-badge" style={{ background: 'rgba(34,197,94,0.15)', color: '#22C55E' }}>🎁 Free</span>}
                     {pack.isActive === false && <span className="mini-badge" style={{ background: 'rgba(239,68,68,0.15)', color: '#EF4444' }}>Hidden</span>}
                   </div>
                   <div className="cmc-title">{pack.title}</div>
@@ -371,6 +426,11 @@ const AdminPacks = () => {
                   <input type="checkbox" checked={form.isNew}
                     onChange={e => setForm(p => ({ ...p, isNew: e.target.checked, badge: e.target.checked ? 'New' : p.isBestseller ? 'Bestseller' : '' }))} />
                   New
+                </label>
+                <label>
+                  <input type="checkbox" checked={form.isFree}
+                    onChange={e => setForm(p => ({ ...p, isFree: e.target.checked }))} />
+                  Free Pack
                 </label>
               </div>
             </div>

@@ -48,6 +48,7 @@ CREATE TABLE public.packs (
   thumbnail      TEXT,
   badge          TEXT,                          -- 'Bestseller' | 'New' | NULL
   items          TEXT[]      NOT NULL DEFAULT '{}',  -- what's included list
+  is_free        BOOLEAN     NOT NULL DEFAULT false,
   is_active      BOOLEAN     NOT NULL DEFAULT true,
   sort_order     INTEGER     NOT NULL DEFAULT 0,
   created_at     TIMESTAMPTZ NOT NULL DEFAULT NOW(),

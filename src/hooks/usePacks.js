@@ -59,4 +59,5 @@ export const mapPack = (p) => ({
   badge: p.badge,
   items: p.items || [],
   isActive: p.is_active,
+  isFree: Boolean(p.is_free),
 })

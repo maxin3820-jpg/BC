@@ -70,10 +70,66 @@
   display: block;
 }
 
-.pack-badge {
+.pack-thumb-badges {
   position: absolute;
   top: 0.75rem;
   left: 0.75rem;
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.pack-badge-item {
+  /* uses global .badge classes */
+}
+
+/* Filter buttons */
+.packs-filter {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.packs-filter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 1rem;
+  border-radius: 100px;
+  border: 1.5px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: var(--font);
+}
+
+.packs-filter-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.packs-filter-btn.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+.packs-filter-count {
+  background: rgba(255,255,255,0.25);
+  border-radius: 100px;
+  padding: 0.05rem 0.45rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.packs-filter-btn:not(.active) .packs-filter-count {
+  background: rgba(0,0,0,0.08);
+  color: var(--text-muted);
 }
 
 .pack-discount-badge {

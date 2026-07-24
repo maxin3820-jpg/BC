@@ -9,6 +9,7 @@ export const packs = [
     thumbnail: 'linear-gradient(135deg, #818CF8 0%, #1D4ED8 100%)',
     items: ['50+ Figma Templates', '500+ Icons Pack', '20 UI Kits', 'Brand Identity Kit'],
     badge: 'Bestseller',
+    isFree: false,
   },
   {
     id: 2,
@@ -20,6 +21,7 @@ export const packs = [
     thumbnail: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
     items: ['200+ Canva Templates', 'Reels & Stories Pack', 'YouTube Thumbnails', 'Post Captions Pack'],
     badge: 'New',
+    isFree: false,
   },
   {
     id: 3,
@@ -31,5 +33,6 @@ export const packs = [
     thumbnail: 'linear-gradient(135deg, #0f0c29, #302b63, #24243e)',
     items: ['React Component Library', '50+ Code Snippets', '5 Project Boilerplates', 'CSS Utilities Pack'],
     badge: null,
+    isFree: false,
   },
 ]

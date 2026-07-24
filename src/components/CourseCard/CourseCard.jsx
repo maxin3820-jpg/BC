@@ -18,7 +18,15 @@ const CourseCard = ({ course, whatsappNumber = '923036326202' }) => {
     <div className="course-card">
       <div className="card-thumb">
         {isImage ? (
-          <img src={thumbnail} alt={title} className="card-thumb-img" loading="lazy" width="400" height="190" />
+          <img 
+            src={thumbnail} 
+            alt={title} 
+            className="card-thumb-img" 
+            loading="lazy" 
+            decoding="async"
+            width="400" 
+            height="190" 
+          />
         ) : (
           <div
             className="card-thumb-bg"

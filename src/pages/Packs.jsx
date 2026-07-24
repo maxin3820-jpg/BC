@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { usePacks } from '../hooks/usePacks'
 import { useSettings } from '../context/SettingsContext'
 import { SkeletonGrid } from '../components/Skeleton/Skeleton'
@@ -6,8 +6,14 @@ import './Packs.css'
 
 const PackCard = ({ pack, whatsappNumber }) => {
   const symbol = 'PKR '
-  const discount = pack.originalPrice ? Math.round((1 - pack.price / pack.originalPrice) * 100) : null
-  const whatsappMsg = encodeURIComponent(`Hi! I'm interested in the pack: "${pack.title}" — priced at ${symbol}${pack.price}. Can you help me get it?`)
+  const isFree = pack.isFree || pack.price === 0
+  const displayPrice = isFree ? 'Free' : `${symbol}${pack.price}`
+  const discount = !isFree && pack.originalPrice ? Math.round((1 - pack.price / pack.originalPrice) * 100) : null
+  const whatsappMsg = encodeURIComponent(
+    isFree
+      ? `Hi! I'm interested in the free pack: "${pack.title}". Can you help me get access?`
+      : `Hi! I'm interested in the pack: "${pack.title}" — priced at ${displayPrice}. Can you help me get it?`
+  )
   const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMsg}`
 
   return (
@@ -18,30 +24,37 @@ const PackCard = ({ pack, whatsappNumber }) => {
         ) : (
           <div className="pack-thumb-bg" style={{ background: pack.thumbnail }} />
         )}
-        {pack.badge && (
-          <span className={`pack-badge ${pack.badge === 'Bestseller' ? 'badge-warning' : 'badge-success'} badge`}>
-            {pack.badge === 'Bestseller' ? '⭐ ' : '✨ '}{pack.badge}
-          </span>
-        )}
-        {discount && <span className="pack-discount-badge">-{discount}%</span>}
+        <div className="pack-thumb-badges">
+          {isFree && <span className="badge badge-primary pack-badge-item">🎁 Free</span>}
+          {!isFree && pack.badge && (
+            <span className={`pack-badge-item badge ${pack.badge === 'Bestseller' ? 'badge-warning' : 'badge-success'}`}>
+              {pack.badge === 'Bestseller' ? '⭐ ' : '✨ '}{pack.badge}
+            </span>
+          )}
+          {!isFree && discount && <span className="pack-discount-badge">-{discount}%</span>}
+        </div>
       </div>
 
       <div className="pack-body">
         <h3 className="pack-title">{pack.title}</h3>
         <p className="pack-desc">{pack.description}</p>
 
-        <div className="pack-price-row">
-          <div className="pack-price">
-            <span className="price-current">{symbol}{pack.price}</span>
-            {pack.originalPrice && <span className="price-original">{symbol}{pack.originalPrice}</span>}
-          </div>
-          <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="whatsapp-btn">
-            <svg viewBox="0 0 24 24" fill="currentColor" width="17" height="17">
-              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-            </svg>
-            Buy on WhatsApp
-          </a>
+        <div className="card-price-row" style={{ paddingTop: '0.5rem', borderTop: '1px solid rgba(0,0,0,0.06)' }}>
+          <span className="price-current">{displayPrice}</span>
+          {!isFree && pack.originalPrice && (
+            <>
+              <span className="price-original">{symbol}{pack.originalPrice}</span>
+              {discount && <span className="price-discount">-{discount}%</span>}
+            </>
+          )}
         </div>
+
+        <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="whatsapp-btn">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="17" height="17">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+          </svg>
+          {isFree ? 'Get Free on WhatsApp' : 'Buy on WhatsApp'}
+        </a>
       </div>
     </div>
   )
@@ -50,7 +63,16 @@ const PackCard = ({ pack, whatsappNumber }) => {
 const Packs = () => {
   const { packs, loading } = usePacks()
   const { settings } = useSettings()
+  const [showFreeOnly, setShowFreeOnly] = useState(false)
   const whatsappNumber = (settings.whatsapp || '923036326202').replace(/\D/g, '')
+
+  const freePacks = packs.filter(p => p.isFree || p.price === 0)
+  const filtered = showFreeOnly ? freePacks : packs
+  
+  // Debug logging
+  console.log('📦 All packs:', packs.length)
+  console.log('🎁 Free packs:', freePacks.length)
+  console.log('Pack data:', packs.map(p => ({ title: p.title, isFree: p.isFree, price: p.price })))
 
   return (
     <div className="packs-page">
@@ -59,21 +81,39 @@ const Packs = () => {
           <span className="badge badge-primary">Digital Products</span>
           <h1>Our <span className="gradient-text">Packs</span></h1>
           <p>Curated bundles of premium digital products. Buy once, use forever.</p>
+
+          {/* Free filter toggle */}
+          {freePacks.length > 0 && (
+            <div className="packs-filter">
+              <button
+                className={`packs-filter-btn ${!showFreeOnly ? 'active' : ''}`}
+                onClick={() => setShowFreeOnly(false)}
+              >
+                All Packs <span className="packs-filter-count">{packs.length}</span>
+              </button>
+              <button
+                className={`packs-filter-btn ${showFreeOnly ? 'active' : ''}`}
+                onClick={() => setShowFreeOnly(true)}
+              >
+                🎁 Free Only <span className="packs-filter-count">{freePacks.length}</span>
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
       <div className="container packs-container">
         {loading ? (
           <SkeletonGrid count={3} />
-        ) : packs.length > 0 ? (
+        ) : filtered.length > 0 ? (
           <div className="packs-grid">
-            {packs.map(pack => <PackCard key={pack.id} pack={pack} whatsappNumber={whatsappNumber} />)}
+            {filtered.map(pack => <PackCard key={pack.id} pack={pack} whatsappNumber={whatsappNumber} />)}
           </div>
         ) : (
           <div className="packs-empty">
             <span>📦</span>
-            <h3>Packs Coming Soon</h3>
-            <p>We're preparing something great. Check back soon!</p>
+            <h3>{showFreeOnly ? 'No Free Packs Yet' : 'Packs Coming Soon'}</h3>
+            <p>{showFreeOnly ? 'Check back soon — free packs are added regularly.' : "We're preparing something great. Check back soon!"}</p>
           </div>
         )}
       </div>
