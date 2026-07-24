@@ -1,27 +1,37 @@
-import React, { useState } from 'react'
+import React, { useState, lazy, Suspense } from 'react'
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom'
 import ScrollToTop from './components/ScrollToTop'
 import Navbar from './components/Navbar/Navbar'
 import Footer from './components/Footer/Footer'
 import AnnouncementBanner from './components/AnnouncementBanner/AnnouncementBanner'
+
+// Public pages — eager loaded (needed immediately)
 import Home from './pages/Home'
 import Courses from './pages/Courses'
 import FreeCourses from './pages/FreeCourses'
 import Packs from './pages/Packs'
 import Contact from './pages/Contact'
 import NotFound from './pages/NotFound'
-import AdminLogin from './pages/Admin/AdminLogin'
-import AdminLayout from './pages/Admin/AdminLayout'
-import Dashboard from './pages/Admin/Dashboard'
-import AdminCourses from './pages/Admin/AdminCourses'
-import AdminPacks from './pages/Admin/AdminPacks'
-import AdminStudents from './pages/Admin/AdminStudents'
-import AdminMessages from './pages/Admin/AdminMessages'
-import AdminAnalytics from './pages/Admin/AdminAnalytics'
-import AdminSettings from './pages/Admin/AdminSettings'
-import AdminFAQs from './pages/Admin/AdminFAQs'
-import AdminTemplates from './pages/Admin/AdminTemplates'
-import AdminReorder from './pages/Admin/AdminReorder'
+
+// Admin pages — lazy loaded (only loaded when admin visits)
+const AdminLogin    = lazy(() => import('./pages/Admin/AdminLogin'))
+const AdminLayout   = lazy(() => import('./pages/Admin/AdminLayout'))
+const Dashboard     = lazy(() => import('./pages/Admin/Dashboard'))
+const AdminCourses  = lazy(() => import('./pages/Admin/AdminCourses'))
+const AdminPacks    = lazy(() => import('./pages/Admin/AdminPacks'))
+const AdminStudents = lazy(() => import('./pages/Admin/AdminStudents'))
+const AdminMessages = lazy(() => import('./pages/Admin/AdminMessages'))
+const AdminAnalytics= lazy(() => import('./pages/Admin/AdminAnalytics'))
+const AdminSettings = lazy(() => import('./pages/Admin/AdminSettings'))
+const AdminFAQs     = lazy(() => import('./pages/Admin/AdminFAQs'))
+const AdminTemplates= lazy(() => import('./pages/Admin/AdminTemplates'))
+const AdminReorder  = lazy(() => import('./pages/Admin/AdminReorder'))
+
+const AdminFallback = () => (
+  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', color: '#44445A', fontSize: '0.875rem' }}>
+    Loading...
+  </div>
+)
 
 // Wraps admin child routes — redirects to login if not authenticated
 const RequireAdmin = ({ isAdmin, children }) => {
@@ -54,7 +64,11 @@ function App() {
           {/* Admin login — redirect to dashboard if already logged in */}
           <Route
             path="/admin/login"
-            element={isAdmin ? <Navigate to="/admin/dashboard" replace /> : <AdminLogin onLogin={handleLogin} />}
+            element={
+              <Suspense fallback={<AdminFallback />}>
+                {isAdmin ? <Navigate to="/admin/dashboard" replace /> : <AdminLogin onLogin={handleLogin} />}
+              </Suspense>
+            }
           />
 
           {/* Protected admin routes */}
@@ -62,7 +76,9 @@ function App() {
             path="/admin"
             element={
               <RequireAdmin isAdmin={isAdmin}>
-                <AdminLayout onLogout={handleLogout} />
+                <Suspense fallback={<AdminFallback />}>
+                  <AdminLayout onLogout={handleLogout} />
+                </Suspense>
               </RequireAdmin>
             }
           >

@@ -5,11 +5,24 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 3000,
-    proxy: {
-      '/api': {
-        target: 'http://localhost:5000',
-        changeOrigin: true,
+  },
+  build: {
+    // Split vendor chunks for better caching
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'supabase': ['@supabase/supabase-js'],
+        }
       }
-    }
+    },
+    // Use esbuild (built-in, faster than terser)
+    minify: 'esbuild',
+    // Warn on large chunks
+    chunkSizeWarningLimit: 600,
+  },
+  // Optimize deps pre-bundling
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'react-router-dom', '@supabase/supabase-js'],
   }
 })

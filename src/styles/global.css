@@ -336,7 +336,25 @@ img { max-width: 100%; height: auto; }
   .pack-body { padding: 1rem; }
 }
 
-/* ===== iOS SAFE AREA ===== */
+/* ===== TRANSITIONS ===== */
+/* Reduce motion for users who prefer it + faster on low-end devices */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Disable heavy hover transforms on touch devices */
+@media (hover: none) {
+  .btn-primary:hover,
+  .btn:hover {
+    transform: none !important;
+  }
+  .course-card:hover {
+    transform: none !important;
+  }
+}
 @supports (padding-bottom: env(safe-area-inset-bottom)) {
   .footer { padding-bottom: calc(2rem + env(safe-area-inset-bottom)); }
   .navbar { padding-top: calc(1.25rem + env(safe-area-inset-top)); }
